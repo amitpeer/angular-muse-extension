@@ -13,9 +13,6 @@ export enum KEY_CODE {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  // constructor() {
-  // }
-
   letters = [["A", "B", "C", "D"],
     ["E", "F", "G", "H"],
     ["I", "J", "K", "L"],
@@ -26,10 +23,11 @@ export class AppComponent {
 
   selectorIndex = {row: 0, col: 0};
 
-  ngAfterViewInit() {
-    let row = this.selectorIndex.row;
-    let col = this.selectorIndex.col;
-    document.getElementById(row + ":" + col).style.backgroundColor = "yellow";
+
+  shouldSelect(row, col) {
+    if (row == this.selectorIndex.row && col == this.selectorIndex.col) {
+      return true;
+    }
   }
 
   @HostListener('window:keyup', ['$event'])
@@ -38,16 +36,20 @@ export class AppComponent {
 
     if (event.keyCode === KEY_CODE.RIGHT_ARROW) {
       this.selectorIndex.col++;
-      this.ngAfterViewInit()
     }
 
     if (event.keyCode === KEY_CODE.LEFT_ARROW) {
       this.selectorIndex.col--;
-      this.ngAfterViewInit()
+    }
+
+    if (event.keyCode === KEY_CODE.DOWN_ARROW) {
+      this.selectorIndex.row++;
+    }
+
+    if (event.keyCode === KEY_CODE.UP_ARROW) {
+      this.selectorIndex.row--;
     }
   }
-
-
 
 
 }
