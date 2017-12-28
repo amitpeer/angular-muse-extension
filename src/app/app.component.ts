@@ -35,21 +35,28 @@ export class AppComponent {
     console.log(event);
 
     if (event.keyCode === KEY_CODE.RIGHT_ARROW) {
-      this.selectorIndex.col++;
+      if (this.selectorIndex.col < this.letters[0].length - 1) {
+        this.selectorIndex.col++;
+      }
     }
 
     if (event.keyCode === KEY_CODE.LEFT_ARROW) {
-      this.selectorIndex.col--;
+      if (this.selectorIndex.col > 0) {
+        this.selectorIndex.col--;
+      }
     }
 
     if (event.keyCode === KEY_CODE.DOWN_ARROW) {
-      this.selectorIndex.row++;
+      if (this.selectorIndex.row < this.letters.length - 1) {
+        this.selectorIndex.row++;
+      }
     }
 
     if (event.keyCode === KEY_CODE.UP_ARROW) {
-      this.selectorIndex.row--;
+      if (this.selectorIndex.row > 0) {
+        this.selectorIndex.row--;
+      }
     }
   }
-
 
 }
