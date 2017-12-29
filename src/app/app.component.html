@@ -1,3 +1,6 @@
+<button (click)="onConnectButtonClick()" *ngIf="!connected">Connect</button>
+<button (click)="disconnect()" *ngIf="connected">Disconnect</button>
+
 <table class="table">
   <tr *ngFor="let letterRow of letters; let row = index">
     <td *ngFor="let letter of letterRow; let col = index">
