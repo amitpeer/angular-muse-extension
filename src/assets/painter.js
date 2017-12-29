@@ -25,3 +25,9 @@ $(document).ready(function () {
     aElements[i].appendChild(backgroundSpan);
   }
 });
+
+chrome.runtime.onMessage.addListener(
+  function (request, sender, sendResponse) {
+    console.log("Received letter from the extension:" + request.letter);
+    sendResponse({farewell: "goodbye"});
+  });

@@ -1,11 +1,15 @@
 import {Component, HostListener} from "@angular/core";
+import "assets/background.js";
 
 export enum KEY_CODE {
   RIGHT_ARROW = 39,
   LEFT_ARROW = 37,
   UP_ARROW = 38,
-  DOWN_ARROW = 40
+  DOWN_ARROW = 40,
+  ENTER = 13
 }
+
+declare var backgroundScript:any;
 
 @Component({
   selector: 'app-root',
@@ -54,6 +58,10 @@ export class AppComponent {
       if (this.selectorIndex.row > 0) {
         this.selectorIndex.row--;
       }
+    }
+
+    if (event.keyCode === KEY_CODE.ENTER) {
+      backgroundScript.doNavigation(this.letters[this.selectorIndex.row][this.selectorIndex.col]);
     }
   }
 

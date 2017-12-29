@@ -9,6 +9,11 @@
   "permissions": [
     "activeTab"
   ],
+  "background": {
+    "scripts": [
+      "assets/background.js"
+    ]
+  },
   "content_scripts": [
     {
       "matches": [
