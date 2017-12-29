@@ -1,3 +1,5 @@
+let linksOfLetters = {};
+
 $(document).ready(function () {
   console.log("painter.js");
 
@@ -23,11 +25,14 @@ $(document).ready(function () {
     letterSpan.appendChild(letter);
     backgroundSpan.appendChild(letterSpan);
     aElements[i].appendChild(backgroundSpan);
+
+    linksOfLetters[abcLetters[i]] = aElements[i].href;
   }
 });
 
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     console.log("Received letter from the extension:" + request.letter);
+    window.location.href = linksOfLetters[request.letter];
     sendResponse({farewell: "goodbye"});
   });
