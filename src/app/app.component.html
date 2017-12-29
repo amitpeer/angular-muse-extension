@@ -1,7 +1,7 @@
 <table class="table">
   <tr *ngFor="let letterRow of letters; let row = index">
     <td *ngFor="let letter of letterRow; let col = index">
-      <span [attr.id]="row+':'+col" [class.selector]="shouldSelect(row,col)">
+      <span [attr.id]="row+':'+col" [class.selector]="shouldHighlight(row,col)">
         {{letter}}
       </span>
     </td>

@@ -24,7 +24,7 @@ export class AppComponent {
   selectorIndex = {row: 0, col: 0};
 
 
-  shouldSelect(row, col) {
+  shouldHighlight(row, col) {
     if (row == this.selectorIndex.row && col == this.selectorIndex.col) {
       return true;
     }
