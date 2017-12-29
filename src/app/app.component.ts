@@ -7,7 +7,7 @@ export enum KEY_CODE {
   UP_ARROW = 38,
   DOWN_ARROW = 40,
   ENTER = 13
-}
+} 
 
 declare var backgroundScript:any;
 
