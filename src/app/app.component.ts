@@ -25,9 +25,7 @@ export class AppComponent {
 
 
   shouldHighlight(row, col) {
-    if (row == this.selectorIndex.row && col == this.selectorIndex.col) {
-      return true;
-    }
+    return row == this.selectorIndex.row && col == this.selectorIndex.col;
   }
 
   @HostListener('window:keyup', ['$event'])
