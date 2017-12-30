@@ -87,7 +87,7 @@ export class AppComponent {
       this.eyesOpenTime = r.timestamp;
 
       let timeEyesAreClosed = this.eyesOpenTime - this.eyesCloseTime;
-      console.log("Diff: ", timeEyesAreClosed / 1000 + " seconds");
+      console.log("Time eyes were closed: ", timeEyesAreClosed / 1000 + " seconds");
       if (timeEyesAreClosed > 1000 && timeEyesAreClosed < 3000) {
         console.log("CLICK");
       }
