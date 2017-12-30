@@ -1,5 +1,5 @@
 import {Component, HostListener} from "@angular/core";
-import {MuseClient, channelNames} from "muse-js";
+import {MuseClient, channelNames, EEGReading} from "muse-js";
 import {Observable} from "rxjs/Observable";
 import {merge} from "rxjs/observable/merge";
 import "rxjs/add/observable/of";
@@ -29,9 +29,15 @@ declare var backgroundScript:any;
 export class AppComponent {
   private muse = new MuseClient();
   connected = false;
+
   leftBlinks:Observable<number>;
   rightBlinks:Observable<number>;
-  closeAndOpenEyes:Observable<number>;
+  eyesClose:Observable<EEGReading>;
+  eyesOpen:Observable<EEGReading>;
+
+  eyesCloseTime = 0;
+  eyesOpenTime = 0;
+
   selectorIndex = {row: 0, col: 0};
   letters = [["A", "B", "C", "D"],
     ["E", "F", "G", "H"],
@@ -58,12 +64,36 @@ export class AppComponent {
     const leftEyeChannel = channelNames.indexOf('AF7');
     const rightEyeChannel = channelNames.indexOf('AF8');
     const leftEarChannel = channelNames.indexOf('TP9');
-
-    // this.closeAndOpenEyes = this.muse.eegReadings
-    //   .filter(r => r.electrode === leftEarChannel)
-    //   .map
+    const rightEarChannel = channelNames.indexOf('TP10');
 
     //noinspection TypeScriptValidateTypes
+    this.eyesClose = this.muse.eegReadings
+      .filter(r => r.electrode === leftEarChannel)
+      .filter(r => Math.max(...r.samples) > 240 && Math.max(...r.samples) < 275);
+
+    //noinspection TypeScriptValidateTypes
+    this.eyesOpen = this.muse.eegReadings
+      .filter(r => r.electrode === leftEarChannel)
+      .filter(r => Math.min(...r.samples) < -150 && Math.min(...r.samples) > -300);
+
+
+    this.eyesClose.subscribe(r => {
+      console.log('Eyes Closed! value: ', Math.max(...r.samples) + " timestamp: " + r.timestamp);
+      this.eyesCloseTime = r.timestamp;
+    });
+
+    this.eyesOpen.subscribe(r => {
+      console.log('Eyes Open! value: ', Math.min(...r.samples) + " timestamp: " + r.timestamp);
+      this.eyesOpenTime = r.timestamp;
+
+      let timeEyesAreClosed = this.eyesOpenTime - this.eyesCloseTime;
+      console.log("Diff: ", timeEyesAreClosed / 1000 + " seconds");
+      if (timeEyesAreClosed > 1000 && timeEyesAreClosed < 3000) {
+        console.log("CLICK");
+      }
+    });
+
+    // noinspection TypeScriptValidateTypes
     this.rightBlinks = this.muse.eegReadings
       .filter(r => r.electrode === rightEyeChannel)
       .map(r => Math.max(...r.samples.map(n => Math.abs(n))))
@@ -71,7 +101,7 @@ export class AppComponent {
       .switchMap(() =>
         merge(
           Observable.of(1),
-          Observable.timer(500).map(() => 0)
+          Observable.timer(1000).map(() => 0)
         )
       );
 
