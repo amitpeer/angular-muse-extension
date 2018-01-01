@@ -78,18 +78,18 @@ export class AppComponent {
 
 
     this.eyesClose.subscribe(r => {
-      console.log('Eyes Closed! value: ', Math.max(...r.samples) + " timestamp: " + r.timestamp);
+      // console.log('Eyes Closed! value: ', Math.max(...r.samples) + " timestamp: " + r.timestamp);
       this.eyesCloseTime = r.timestamp;
     });
 
     this.eyesOpen.subscribe(r => {
-      console.log('Eyes Open! value: ', Math.min(...r.samples) + " timestamp: " + r.timestamp);
+      // console.log('Eyes Open! value: ', Math.min(...r.samples) + " timestamp: " + r.timestamp);
       this.eyesOpenTime = r.timestamp;
 
       let timeEyesAreClosed = this.eyesOpenTime - this.eyesCloseTime;
-      console.log("Time eyes were closed: ", timeEyesAreClosed / 1000 + " seconds");
+      // console.log("Time eyes were closed: ", timeEyesAreClosed / 1000 + " seconds");
       if (timeEyesAreClosed > 1000 && timeEyesAreClosed < 3000) {
-        console.log("CLICK");
+        // console.log("CLICK");
       }
     });
 
@@ -107,7 +107,8 @@ export class AppComponent {
 
     this.rightBlinks.subscribe(value => {
       if (value === 1) {
-        console.log('Right Blink!', value);
+        console.log('Right Blink! Performing Click', value);
+        this.click();
       }
     });
 
@@ -146,8 +147,12 @@ export class AppComponent {
     }
 
     if (event.keyCode === KEY_CODE.ENTER) {
-      backgroundScript.doNavigation(this.letters[this.selectorIndex.row][this.selectorIndex.col]);
+      this.click();
     }
+  }
+
+  click() {
+    backgroundScript.doNavigation(this.letters[this.selectorIndex.row][this.selectorIndex.col]);
   }
 
 }

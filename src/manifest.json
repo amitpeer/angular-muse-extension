@@ -2,28 +2,46 @@
   "manifest_version": 2,
   "name": "Extension",
   "description": "Angular CLI Chrome app. ",
+  "minimum_chrome_version": "56",
   "version": "1.0",
   "browser_action": {
     "default_popup": "index.html"
   },
   "permissions": [
-    "activeTab"
+    "nativeMessaging",
+    "tabs",
+    "activeTab",
+    "background",
+    "http://*/",
+    "https://*/"
   ],
   "background": {
     "scripts": [
-      "assets/background.js"
+      "assets/background.js",
+      "assets/web-bluetooth/background-bluetooth.js",
+      "assets/web-bluetooth/gatt-services.js",
+      "assets/web-bluetooth/gatt-characteristics.js"
     ]
   },
   "content_scripts": [
     {
       "matches": [
-        "<all_urls>"
+        "<all_urls>",
+        "https://*/*",
+        "http://localhost:*/*",
+        "http://127.0.0.1:*/*"
       ],
       "js": [
         "assets/jquery-3.2.1.min.js",
-        "assets/painter.js"
-      ]
+        "assets/content.js",
+        "assets/web-bluetooth/content-bluetooth.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
     }
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "web_accessible_resources": [
+    "assets/web-bluetooth/polyfill.js"
+  ]
 }

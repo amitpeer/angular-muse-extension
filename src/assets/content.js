@@ -1,7 +1,7 @@
 let linksOfLetters = {};
 
 $(document).ready(function () {
-  console.log("painter.js");
+  console.log("content.js");
 
   let abcLetters = ["A", "B", "C", "D", "E", "F", "G",
     "H", "I", "J", "K", "L", "M", "N",
