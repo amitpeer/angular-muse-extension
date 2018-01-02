@@ -32,7 +32,15 @@ $(document).ready(function () {
 
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
-    console.log("Received letter from the extension:" + request.letter);
-    window.location.href = linksOfLetters[request.letter];
-    sendResponse({farewell: "goodbye"});
+    switch (request.type) {
+      case "navigate":
+        console.log("Received letter from the extension:" + request.letter);
+        // window.location.href = linksOfLetters[request.letter];
+        sendResponse({farewell: "goodbye"});
+        break;
+      case "openModal":
+        console.log("open modal");
+        // window.open("..\\index.html", "extension_popup", "width=300,height=400,status=no,scrollbars=no,resizable=no");
+        break;
+    }
   });

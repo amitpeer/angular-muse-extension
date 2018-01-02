@@ -45,7 +45,8 @@ export class AppComponent {
     ["M", "N", "O", "P"],
     ["Q", "R", "S", "T"],
     ["U", "V", "W", "X"],
-    ["Y", "Z", "?", "?"]];
+    ["Y", "Z", "?", "?"],
+    ["?", "?", "?", "?"]];
 
   constructor() {
     this.muse.connectionStatus.subscribe(newStatus => {
