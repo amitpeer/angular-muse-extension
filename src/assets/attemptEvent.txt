@@ -1,0 +1,35 @@
+*** attempt to navigate by closing 2 eyes for some time ***
+** failure ***
+
+  eyesClose: Observable<EEGReading>;
+  eyesOpen: Observable<EEGReading>;
+
+    eyesCloseTime = 0;
+    eyesOpenTime = 0;
+
+//noinspection TypeScriptValidateTypes
+    this.eyesClose = this.muse.eegReadings
+      .filter(r => r.electrode === leftEarChannel)
+      .filter(r => Math.max(...r.samples) > 240 && Math.max(...r.samples) < 275);
+
+    //noinspection TypeScriptValidateTypes
+    this.eyesOpen = this.muse.eegReadings
+      .filter(r => r.electrode === leftEarChannel)
+      .filter(r => Math.min(...r.samples) < -150 && Math.min(...r.samples) > -300);
+
+
+    this.eyesClose.subscribe(r => {
+      // console.log('Eyes Closed! value: ', Math.max(...r.samples) + " timestamp: " + r.timestamp);
+      this.eyesCloseTime = r.timestamp;
+    });
+
+    this.eyesOpen.subscribe(r => {
+      // console.log('Eyes Open! value: ', Math.min(...r.samples) + " timestamp: " + r.timestamp);
+      this.eyesOpenTime = r.timestamp;
+
+      const timeEyesAreClosed = this.eyesOpenTime - this.eyesCloseTime;
+      // console.log("Time eyes were closed: ", timeEyesAreClosed / 1000 + " seconds");
+      if (timeEyesAreClosed > 1000 && timeEyesAreClosed < 3000) {
+        // console.log("CLICK");
+      }
+    });

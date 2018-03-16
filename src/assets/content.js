@@ -15,7 +15,7 @@ $(document).ready(function () {
     let backgroundSpan = document.createElement("span");
     backgroundSpan.style.backgroundColor = "red";
     backgroundSpan.style.border = "thin dotted blue";
-    backgroundSpan.style.opacity = 0.6;
+    backgroundSpan.style.opacity = 0.8;
 
     let letterSpan = document.createElement("span");
     letterSpan.style.fontSize = "20px";
@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener(
     switch (request.type) {
       case "navigate":
         console.log("Received letter from the extension:" + request.letter);
-        // window.location.href = linksOfLetters[request.letter];
+        window.location.href = linksOfLetters[request.letter];
         sendResponse({farewell: "goodbye"});
         break;
       case "openModal":

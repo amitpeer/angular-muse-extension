@@ -1,6 +1,8 @@
 import {BrowserModule} from "@angular/platform-browser";
 import {NgModule} from "@angular/core";
 import {AppComponent} from "./app.component";
+import {OpenMatrixService} from "./services/open-matrix-service";
+import {CloseMatrixService} from "./services/close-matrix-service";
 
 
 @NgModule({
@@ -10,7 +12,8 @@ import {AppComponent} from "./app.component";
   imports: [
     BrowserModule
   ],
-  providers: [],
+  providers: [OpenMatrixService, CloseMatrixService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -2,9 +2,9 @@
 <button (click)="disconnect()" *ngIf="connected">Disconnect</button>
 
 <table class="table">
-  <tr *ngFor="let letterRow of letters; let row = index">
+  <tr *ngFor="let letterRow of lettersMatrix(); let row = index">
     <td *ngFor="let letter of letterRow; let col = index">
-      <span [attr.id]="row+':'+col" [class.selector]="shouldHighlight(row,col)">
+      <span class="matrix-letters" [attr.id]="row+':'+col" [class.selector]="shouldHighlight(row,col)">
         {{letter}}
       </span>
     </td>
