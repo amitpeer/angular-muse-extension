@@ -1,5 +1,14 @@
 #mainWindow {
-  width: 400px;
-  height: 650px;
-  background-color: darkgray;
+  width: 20%;
+  height: 20%;
+  background-color: lightgray;
+}
+
+.matrix-letters {
+  font-family: cursive;
+  font-size: large;
+}
+
+.selector {
+  background-color: yellow;
 }

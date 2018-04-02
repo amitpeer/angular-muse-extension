@@ -16,8 +16,8 @@ var backgroundScript = (function () {
     },
     maximize: function () {
       document.body.style.visibility = "visible";
-      document.body.style.width = "220px";
-      document.body.style.height = "120px";
+      document.body.style.width = "20%";
+      document.body.style.height = "20%";
     },
     scrollDown: function () {
       console.log('background::scrollDown');

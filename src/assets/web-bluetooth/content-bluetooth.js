@@ -54,9 +54,10 @@ class DeviceChooserUI {
     const shadowRoot = this.container.attachShadow({mode: 'closed'});
     this.shadowRoot = shadowRoot;
     shadowRoot.innerHTML = `
-            <style>
+  <style>
                 #chooser-dialog {
-                    width: 380px;
+                    width: 100%;
+                    height: 100%;
                     background: white;
                     margin: 0 auto;
                     border: solid #bababa 1px;
@@ -72,12 +73,14 @@ class DeviceChooserUI {
 
                 #device-list {
                     background: #f2f1f0;
-                    height: 320px;
+                    height: 15%;
+                    width: 70%;
                     min-height: 32px;
                     max-height: calc(100vh - 120px);
                     border: solid #9e9e9e 1px;
                     margin: 8px 0;
                     overflow: auto;
+                    font-size: xx-small;
                 }
 
                 .device-item {
@@ -106,20 +109,16 @@ class DeviceChooserUI {
                     margin-left: 8px;
                     background: #edebea;
                     padding: 4px 12px;
+                    margin-right: auto;
                 }
 
             </style>
 
             <div id="chooser-dialog">
-                <span id="hostname"> </span> wants to pair
                 <div id="device-list">
                 </div>
                 <div id="buttons">
-                    <button id="btn-cancel">Cancel</button>
                     <button id="btn-pair">Pair</button>
-                </div>
-                <div id="footer">
-                    Powered by <a href="https://github.com/urish/web-bluetooth-polyfill" target="_blank">Web Bluetooth Polyfill</a>
                 </div>
             </div>
         `;
@@ -128,8 +127,6 @@ class DeviceChooserUI {
     this.deviceListElement = shadowRoot.getElementById('device-list');
 
     shadowRoot.getElementById('chooser-dialog').addEventListener('click', e => e.stopPropagation());
-    shadowRoot.getElementById('hostname').innerText = "Angular Muse Extension";
-    shadowRoot.getElementById('btn-cancel').addEventListener('click', () => this.cancel());
     this.btnPair.addEventListener('click', () => this.pair());
   }
 
