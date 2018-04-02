@@ -13,20 +13,12 @@ import "rxjs/add/operator/merge";
 import {map, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs/Subject";
 import {OpenMatrixService} from "./services/open-matrix-service";
+import {CloseMatrixService} from "./services/close-matrix-service";
 
 
 export enum STATE {
   OPEN = 'open',
   CLOSE = 'close'
-}
-
-
-export enum KEY_CODE {
-  RIGHT_ARROW = 39,
-  LEFT_ARROW = 37,
-  UP_ARROW = 38,
-  DOWN_ARROW = 40,
-  ENTER = 13
 }
 
 declare var backgroundScript:any;
@@ -37,16 +29,15 @@ declare var backgroundScript:any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  state = STATE.OPEN;
   private muse = new MuseClient();
-  stateChangeTime = Date.now();
+  blinkTime = Date.now();
   connected = false;
   leftBlinks:Observable<number>;
   rightBlinks:Observable<number>;
   accelerometer:Observable<XYZ>;
   destroy = new Subject<void>();
-  dataRecievedCount = 0;
-  moveOnTreshHold = 7;
+  dataReceivedCount = 0;
+  dataReceivedThreshHold = 7;
   XYZ_down = {
     x: 0.15,
     y: 0,
@@ -68,9 +59,9 @@ export class AppComponent {
     z: 1
   };
   private matrixState;
-  private START_DELAY = 5 * 1000;
+  private START_DELAY = 2 * 1000;
 
-  constructor(private openMatrixService:OpenMatrixService) {
+  constructor(private openMatrixService:OpenMatrixService, private closeMatrixService:CloseMatrixService) {
     this.muse.connectionStatus.subscribe(newStatus => {
       this.connected = newStatus;
       this.matrixState = openMatrixService;
@@ -87,6 +78,10 @@ export class AppComponent {
 
   shouldHighlight(row, col) {
     return this.matrixState.shouldHighlight(row, col);
+  }
+
+  public dataRecievedTreshHoldChange(treshHold) {
+    this.dataReceivedThreshHold = treshHold;
   }
 
   async onConnectButtonClick() {
@@ -111,28 +106,11 @@ export class AppComponent {
       );
 
     this.rightBlinks.subscribe(value => {
-      if (value === 1) {
+      const msSinceBlink = Date.now() - this.blinkTime;
+      if (value === 1 && msSinceBlink > 2000) {
+        this.blinkTime = Date.now();
         console.log('Right Blink! Performing Click', value);
         this.matrixState.click();
-      }
-    });
-
-    //noinspection TypeScriptValidateTypes
-    this.leftBlinks = this.muse.eegReadings
-      .filter(r => r.electrode === leftEyeChannel)
-      .map(r => Math.max(...r.samples.map(n => Math.abs(n))))
-      .filter(max => max > 500 && max < 1000)
-      .switchMap(() =>
-        merge(
-          Observable.of(1),
-          Observable.timer(1000).map(() => 0)
-        )
-      );
-
-    this.leftBlinks.subscribe(value => {
-      const msSinceStateChange = Date.now() - this.stateChangeTime;
-      if (value === 1 && msSinceStateChange > 2000) {
-        console.log('Left Blink! Performing state changing', value);
         this.stateChange();
       }
     });
@@ -148,80 +126,38 @@ export class AppComponent {
   }
 
   private startAccelerometer() {
-    // this.accelerometer.subscribe(value => {
-    //   this.dataRecievedCount++;
-    //   if (this.timeToMoveOn()) {
-    //     this.dataRecievedCount = 0;
-    //     if (value.x > this.XYZ_down.x && value.z < this.XYZ_down.z
-    //       && this.selectorIndex.row < this.letters.length - 1) {
-    //       console.log('Accelerometer Data (Down): ', value);
-    //       this.selectorIndex.row++;
-    //     } else if (value.x < this.XYZ_up.x && value.z < this.XYZ_up.z
-    //       && this.selectorIndex.row > 0) {
-    //       console.log('Accelerometer Data (Up): ', value);
-    //       this.selectorIndex.row--;
-    //     } else if (value.y > this.XYZ_right.y
-    //       && this.selectorIndex.col < this.letters[0].length - 1) {
-    //       console.log('Accelerometer Data (Right): ', value);
-    //       this.selectorIndex.col++;
-    //     } else if (value.y < this.XYZ_left.y
-    //       && this.selectorIndex.col > 0) {
-    //       console.log('Accelerometer Data (Left): ', value);
-    //       this.selectorIndex.col--;
-    //     }
-    //   }
-    // });
+    this.accelerometer.subscribe(value => {
+      this.dataReceivedCount++;
+      if (this.isReceivedPastThreshold()) {
+        this.dataReceivedCount = 0;
+        if (value.x > this.XYZ_down.x && value.z < this.XYZ_down.z) {
+          console.log('Accelerometer Data (Down): ', value);
+          this.matrixState.headDown(this);
+        } else if (value.x < this.XYZ_up.x && value.z < this.XYZ_up.z) {
+          console.log('Accelerometer Data (Up): ', value);
+          this.matrixState.headUp(this);
+        } else if (value.y > this.XYZ_right.y) {
+          console.log('Accelerometer Data (Right): ', value);
+          this.matrixState.headRight();
+        } else if (value.y < this.XYZ_left.y) {
+          console.log('Accelerometer Data (Left): ', value);
+          this.matrixState.headLeft();
+        }
+      }
+    });
   }
 
-  private timeToMoveOn() {
-    return (this.dataRecievedCount > this.moveOnTreshHold);
+  private isReceivedPastThreshold() {
+    return (this.dataReceivedCount > this.matrixState.getDataReceivedThreshold());
   }
 
   private stateChange() {
-    this.stateChangeTime = Date.now();
-    if (this.state === STATE.OPEN) {
-      this.state = STATE.CLOSE;
-      this.matrixState = this.openMatrixService;
-      // close matrix
+    if (this.matrixState.getState() === STATE.OPEN) {
+      this.matrixState = this.closeMatrixService;
       backgroundScript.minimize();
-    } else {
-      this.state = STATE.OPEN;
-      // open matrix
+    } else if (this.matrixState.getState() === STATE.CLOSE) {
+      this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
     }
   }
 }
-
-// @HostListener('window:keyup', ['$event'])
-// keyEvent(event: KeyboardEvent) {
-//   console.log(event);
-//
-//   if (event.keyCode === KEY_CODE.RIGHT_ARROW) {
-//     if (this.selectorIndex.col < this.matrixState()[0].length - 1) {
-//       this.selectorIndex.col++;
-//     }
-//   }
-//
-//   if (event.keyCode === KEY_CODE.LEFT_ARROW) {
-//     if (this.selectorIndex.col > 0) {
-//       this.selectorIndex.col--;
-//     }
-//   }
-//
-//   if (event.keyCode === KEY_CODE.DOWN_ARROW) {
-//     if (this.selectorIndex.row < this.matrixState().length - 1) {
-//       this.selectorIndex.row++;
-//     }
-//   }
-//   if (event.keyCode === KEY_CODE.UP_ARROW) {
-//     if (this.selectorIndex.row > 0) {
-//       this.selectorIndex.row--;
-//     }
-//   }
-//
-//   if (event.keyCode === KEY_CODE.ENTER) {
-//     // this.click();
-//   }
-// }
-
-

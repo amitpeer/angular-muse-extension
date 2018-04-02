@@ -33,3 +33,97 @@
         // console.log("CLICK");
       }
     });
+
+
+***Navigate with keyboard***
+
+
+export enum KEY_CODE {
+  RIGHT_ARROW = 39,
+  LEFT_ARROW = 37,
+  UP_ARROW = 38,
+  DOWN_ARROW = 40,
+  ENTER = 13
+}
+
+    // @HostListener('window:keyup', ['$event'])
+    // keyEvent(event: KeyboardEvent) {
+    //   console.log(event);
+    //
+    //   if (event.keyCode === KEY_CODE.RIGHT_ARROW) {
+    //     if (this.selectorIndex.col < this.matrixState()[0].length - 1) {
+    //       this.selectorIndex.col++;
+    //     }
+    //   }
+    //
+    //   if (event.keyCode === KEY_CODE.LEFT_ARROW) {
+    //     if (this.selectorIndex.col > 0) {
+    //       this.selectorIndex.col--;
+    //     }
+    //   }
+    //
+    //   if (event.keyCode === KEY_CODE.DOWN_ARROW) {
+    //     if (this.selectorIndex.row < this.matrixState().length - 1) {
+    //       this.selectorIndex.row++;
+    //     }
+    //   }
+    //   if (event.keyCode === KEY_CODE.UP_ARROW) {
+    //     if (this.selectorIndex.row > 0) {
+    //       this.selectorIndex.row--;
+    //     }
+    //   }
+    //
+    //   if (event.keyCode === KEY_CODE.ENTER) {
+    //     // this.click();
+    //   }
+    // }
+
+
+
+
+
+***Navigate with keyboard***
+
+
+export enum KEY_CODE {
+  RIGHT_ARROW = 39,
+  LEFT_ARROW = 37,
+  UP_ARROW = 38,
+  DOWN_ARROW = 40,
+  ENTER = 13
+}
+
+    // @HostListener('window:keyup', ['$event'])
+    // keyEvent(event: KeyboardEvent) {
+    //   console.log(event);
+    //
+    //   if (event.keyCode === KEY_CODE.RIGHT_ARROW) {
+    //     if (this.selectorIndex.col < this.matrixState()[0].length - 1) {
+    //       this.selectorIndex.col++;
+    //     }
+    //   }
+    //
+    //   if (event.keyCode === KEY_CODE.LEFT_ARROW) {
+    //     if (this.selectorIndex.col > 0) {
+    //       this.selectorIndex.col--;
+    //     }
+    //   }
+    //
+    //   if (event.keyCode === KEY_CODE.DOWN_ARROW) {
+    //     if (this.selectorIndex.row < this.matrixState().length - 1) {
+    //       this.selectorIndex.row++;
+    //     }
+    //   }
+    //   if (event.keyCode === KEY_CODE.UP_ARROW) {
+    //     if (this.selectorIndex.row > 0) {
+    //       this.selectorIndex.row--;
+    //     }
+    //   }
+    //
+    //   if (event.keyCode === KEY_CODE.ENTER) {
+    //     // this.click();
+    //   }
+    // }
+
+
+

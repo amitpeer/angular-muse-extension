@@ -17,18 +17,17 @@ export class OpenMatrixService {
     ['Y', 'Z', '?', '?'],
     ['?', '?', '?', '?']];
 
+  private dataReceivedThreshold = 8;
 
   constructor() {
   }
 
+  public getState() {
+    return 'open';
+  }
+
   public click() {
-    console.log('openMatrixService::click');
-    const msSinceClick = Date.now() - this.clickTime;
-    if (msSinceClick > this.TIME_BETWEEN_CLICKS) {
-      console.log('openMatrixService::click (after delay check)');
-      this.clickTime = Date.now();
-      backgroundScript.doNavigation(this.letters[this.selectorIndex.row][this.selectorIndex.col]);
-    }
+    backgroundScript.doNavigation(this.letters[this.selectorIndex.row][this.selectorIndex.col]);
   }
 
   public shouldHighlight(row, col) {
@@ -37,5 +36,33 @@ export class OpenMatrixService {
 
   public getLetter() {
     return this.letters;
+  }
+
+  public headDown(controller) {
+    if (this.selectorIndex.row < this.letters.length - 1) {
+      this.selectorIndex.row++;
+    }
+  }
+
+  public headUp(controller) {
+    if (this.selectorIndex.row > 0) {
+      this.selectorIndex.row--;
+    }
+  }
+
+  public headRight() {
+    if (this.selectorIndex.col < this.letters[0].length - 1) {
+      this.selectorIndex.col++;
+    }
+  }
+
+  public headLeft() {
+    if (this.selectorIndex.col > 0) {
+      this.selectorIndex.col--;
+    }
+  }
+
+  public getDataReceivedThreshold() {
+    return this.dataReceivedThreshold;
   }
 }

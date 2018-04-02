@@ -38,9 +38,13 @@ chrome.runtime.onMessage.addListener(
         window.location.href = linksOfLetters[request.letter];
         sendResponse({farewell: "goodbye"});
         break;
-      case "openModal":
-        console.log("open modal");
-        // window.open("..\\index.html", "extension_popup", "width=300,height=400,status=no,scrollbars=no,resizable=no");
+      case "scrollDown":
+        console.log("scroll down");
+        window.scrollBy(0, 15);
+        break;
+      case "scrollUp":
+        console.log("scroll up");
+        window.scrollBy(0, -15);
         break;
     }
   });

@@ -9,12 +9,6 @@ var backgroundScript = (function () {
         });
       });
     },
-    openMatrix: function () {
-      // window.open("index.html", "extension_popup", "width=300,height=400,status=no,scrollbars=no,resizable=no");
-      chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {type: "openModal"});
-      })
-    },
     minimize: function () {
       document.body.style.visibility = "hidden";
       document.body.style.width = 0;
@@ -22,8 +16,24 @@ var backgroundScript = (function () {
     },
     maximize: function () {
       document.body.style.visibility = "visible";
-      document.body.style.width = "120px";
+      document.body.style.width = "220px";
       document.body.style.height = "120px";
+    },
+    scrollDown: function () {
+      console.log('background::scrollDown');
+      chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {type: "scrollDown"}, function (response) {
+          console.log("after scroll down");
+        });
+      });
+    },
+    scrollUp: function () {
+      console.log('background::scrollUp');
+      chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {type: "scrollUp"}, function (response) {
+          console.log('after scroll up');
+        });
+      });
     }
   }
 
