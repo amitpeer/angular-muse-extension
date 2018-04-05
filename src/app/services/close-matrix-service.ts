@@ -15,6 +15,11 @@ export class CloseMatrixService {
     return 'close';
   }
 
+  public getHeadSensibility() {
+    return 60;
+  }
+
+
   public click() {
   }
 

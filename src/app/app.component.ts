@@ -21,6 +21,7 @@ export enum STATE {
   CLOSE = 'close'
 }
 
+declare var backgroundScript:any;
 export enum KEY_CODE {
   RIGHT_ARROW = 39,
   LEFT_ARROW = 37,
@@ -39,6 +40,7 @@ declare var backgroundScript:any;
 export class AppComponent {
   private muse = new MuseClient();
   blinkTime = Date.now();
+  headMoveTimer = Date.now();
   connected = false;
   leftBlinks:Observable<number>;
   rightBlinks:Observable<number>;
@@ -46,26 +48,16 @@ export class AppComponent {
   destroy = new Subject<void>();
   dataReceivedCount = 0;
   dataReceivedThreshHold = 7;
-  XYZ_down = {
-    x: 0.15,
-    y: 0,
-    z: 0.98
+
+  acceloAdjustedValueX = 0;
+  acceloAdjustedValueY = 0.25;
+  acceloAdjustedValueZ = 1;
+  XYZ_accelometer = {
+    x: this.acceloAdjustedValueX,
+    y: this.acceloAdjustedValueY,
+    z: this.acceloAdjustedValueZ
   };
-  XYZ_up = {
-    x: -0.15,
-    y: 0,
-    z: 0.95
-  };
-  XYZ_right = {
-    x: 0,
-    y: 0.18,
-    z: 1
-  };
-  XYZ_left = {
-    x: 0,
-    y: -0.12,
-    z: 1
-  };
+  isInCentralizeMode = false;
   private matrixState;
   private START_DELAY = 2 * 1000;
 
@@ -80,16 +72,16 @@ export class AppComponent {
     return this.matrixState.getLetter();
   }
 
+  delay(ms:number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   isLetter(str) {
     return this.matrixState.isLetter(str);
   }
 
   getImgSrc(str) {
     return this.matrixState.getImgSrc(str);
-  }
-
-  delay(ms:number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   shouldHighlight(row, col) {
@@ -127,7 +119,7 @@ export class AppComponent {
         this.blinkTime = Date.now();
         console.log('Right Blink! Performing Click', value);
         const response = this.matrixState.click();
-        if (response != 'none') {
+        if (response !== 'none') {
           this.stateChange();
         }
       }
@@ -143,25 +135,12 @@ export class AppComponent {
     this.muse.disconnect();
   }
 
-  private startAccelerometer() {
+  centralize() {
+    this.isInCentralizeMode = true;
     this.accelerometer.subscribe(value => {
-      this.dataReceivedCount++;
-      if (this.isReceivedPastThreshold()) {
-        this.dataReceivedCount = 0;
-        if (value.x > this.XYZ_down.x && value.z < this.XYZ_down.z) {
-          console.log('Accelerometer Data (Down): ', value);
-          this.matrixState.headDown();
-        } else if (value.x < this.XYZ_up.x && value.z < this.XYZ_up.z) {
-          console.log('Accelerometer Data (Up): ', value);
-          this.matrixState.headUp();
-        } else if (value.y > this.XYZ_right.y) {
-          console.log('Accelerometer Data (Right): ', value);
-          this.matrixState.headRight();
-        } else if (value.y < this.XYZ_left.y) {
-          console.log('Accelerometer Data (Left): ', value);
-          this.matrixState.headLeft();
-        }
-      }
+      this.acceloAdjustedValueX = value.x;
+      this.acceloAdjustedValueY = value.y;
+      this.acceloAdjustedValueZ = value.z;
     });
   }
 
@@ -169,7 +148,12 @@ export class AppComponent {
     return (this.dataReceivedCount > this.matrixState.getDataReceivedThreshold());
   }
 
-  public stateChange() {
+  stopCentralize() {
+    this.adjustmentAccelerometerValue();
+    this.isInCentralizeMode = false;
+  }
+
+  private stateChange() {
     if (this.matrixState.getState() === STATE.OPEN) {
       this.matrixState = this.closeMatrixService;
       backgroundScript.minimize();
@@ -177,6 +161,35 @@ export class AppComponent {
       this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
     }
+  }
+
+  private startAccelerometer() {
+    this.accelerometer.subscribe(value => {
+      const msSinceHeadMove = Date.now() - this.headMoveTimer;
+
+      if (msSinceHeadMove > this.matrixState.getHeadSensibility()) {
+        this.headMoveTimer = Date.now();
+        if (value.y < (this.XYZ_accelometer.y * (-1) + 0.20)) {
+          console.log('Accelerometer Data (Left): ', value);
+          this.matrixState.headLeft();
+        } else if (value.y > this.XYZ_accelometer.y) {
+          console.log('Accelerometer Data (Right): ', value);
+          this.matrixState.headRight();
+        } else if (value.x > this.XYZ_accelometer.x + 0.15) {
+          console.log('Accelerometer Data (Down): ', value);
+          this.matrixState.headDown();
+        } else if (value.x < this.XYZ_accelometer.x - 0.15) {
+          console.log('Accelerometer Data (Up): ', value);
+          this.matrixState.headUp();
+        }
+      }
+    });
+  }
+
+  private adjustmentAccelerometerValue() {
+    this.XYZ_accelometer.x = this.acceloAdjustedValueX;
+    this.XYZ_accelometer.y = this.acceloAdjustedValueY + 0.25;
+    this.XYZ_accelometer.z = this.acceloAdjustedValueZ;
   }
 
   @HostListener('window:keyup', ['$event'])

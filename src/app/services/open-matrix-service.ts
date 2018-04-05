@@ -37,8 +37,12 @@ export class OpenMatrixService {
     return 'open';
   }
 
+  public getHeadSensibility() {
+    return 600;
+  }
+
   public click() {
-    var clickedIcon = this.letters[this.selectorIndex.row][this.selectorIndex.col];
+    const clickedIcon = this.letters[this.selectorIndex.row][this.selectorIndex.col];
     if (this.isLetter(clickedIcon)) {
       backgroundScript.doNavigation(this.letters[this.selectorIndex.row][this.selectorIndex.col]);
     } else if (clickedIcon === ACTION.NO_ACTION) {
