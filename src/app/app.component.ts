@@ -126,7 +126,7 @@ export class AppComponent {
       if (value === 1 && msSinceBlink > 2000) {
         this.blinkTime = Date.now();
         console.log('Right Blink! Performing Click', value);
-        var response = this.matrixState.click();
+        const response = this.matrixState.click();
         if (response != 'none') {
           this.stateChange();
         }
