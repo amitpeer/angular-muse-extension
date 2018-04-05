@@ -1,12 +1,18 @@
 #mainWindow {
-  width: 20%;
-  height: 20%;
+  width: fit-content;
+  height: fit-content;
   background-color: lightgray;
 }
 
 .matrix-letters {
   font-family: cursive;
-  font-size: large;
+  font-size: x-large;
+  width: 100%
+}
+
+.matrix-image {
+  width: 20px;
+  height: 20px;
 }
 
 .selector {

@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostListener} from "@angular/core";
 import {channelNames, MuseClient, XYZ} from "muse-js";
 import {Observable} from "rxjs/Observable";
 import {merge} from "rxjs/observable/merge";
@@ -19,6 +19,14 @@ import {CloseMatrixService} from "./services/close-matrix-service";
 export enum STATE {
   OPEN = 'open',
   CLOSE = 'close'
+}
+
+export enum KEY_CODE {
+  RIGHT_ARROW = 39,
+  LEFT_ARROW = 37,
+  UP_ARROW = 38,
+  DOWN_ARROW = 40,
+  ENTER = 13
 }
 
 declare var backgroundScript:any;
@@ -72,6 +80,14 @@ export class AppComponent {
     return this.matrixState.getLetter();
   }
 
+  isLetter(str) {
+    return this.matrixState.isLetter(str);
+  }
+
+  getImgSrc(str) {
+    return this.matrixState.getImgSrc(str);
+  }
+
   delay(ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -110,8 +126,10 @@ export class AppComponent {
       if (value === 1 && msSinceBlink > 2000) {
         this.blinkTime = Date.now();
         console.log('Right Blink! Performing Click', value);
-        this.matrixState.click();
-        this.stateChange();
+        var response = this.matrixState.click();
+        if (response != 'none') {
+          this.stateChange();
+        }
       }
     });
 
@@ -132,10 +150,10 @@ export class AppComponent {
         this.dataReceivedCount = 0;
         if (value.x > this.XYZ_down.x && value.z < this.XYZ_down.z) {
           console.log('Accelerometer Data (Down): ', value);
-          this.matrixState.headDown(this);
+          this.matrixState.headDown();
         } else if (value.x < this.XYZ_up.x && value.z < this.XYZ_up.z) {
           console.log('Accelerometer Data (Up): ', value);
-          this.matrixState.headUp(this);
+          this.matrixState.headUp();
         } else if (value.y > this.XYZ_right.y) {
           console.log('Accelerometer Data (Right): ', value);
           this.matrixState.headRight();
@@ -151,13 +169,38 @@ export class AppComponent {
     return (this.dataReceivedCount > this.matrixState.getDataReceivedThreshold());
   }
 
-  private stateChange() {
+  public stateChange() {
     if (this.matrixState.getState() === STATE.OPEN) {
       this.matrixState = this.closeMatrixService;
       backgroundScript.minimize();
     } else if (this.matrixState.getState() === STATE.CLOSE) {
       this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
+    }
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event:KeyboardEvent) {
+    console.log(event);
+
+    if (event.keyCode === KEY_CODE.RIGHT_ARROW) {
+      this.matrixState.headRight();
+    }
+
+    if (event.keyCode === KEY_CODE.LEFT_ARROW) {
+      this.matrixState.headLeft();
+    }
+
+    if (event.keyCode === KEY_CODE.DOWN_ARROW) {
+      this.matrixState.headDown();
+    }
+
+    if (event.keyCode === KEY_CODE.UP_ARROW) {
+      this.matrixState.headUp();
+    }
+
+    if (event.keyCode === KEY_CODE.ENTER) {
+      this.matrixState.click();
     }
   }
 }

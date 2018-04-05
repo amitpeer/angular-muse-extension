@@ -34,17 +34,22 @@ chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     switch (request.type) {
       case "navigate":
-        console.log("Received letter from the extension:" + request.letter);
+        console.log("content::Received letter from the extension:" + request.letter);
         window.location.href = linksOfLetters[request.letter];
         sendResponse({farewell: "goodbye"});
         break;
       case "scrollDown":
-        console.log("scroll down");
+        console.log("content::scroll down");
         window.scrollBy(0, 15);
         break;
       case "scrollUp":
-        console.log("scroll up");
+        console.log("content::scroll up");
         window.scrollBy(0, -15);
+        break;
+      case "refresh":
+        console.log("content::refresh")
+        location.reload();
+        // document.getElementsByTagName('body')[0].contentWindow.location.reload();
         break;
     }
   });

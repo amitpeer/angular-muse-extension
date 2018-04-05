@@ -5,7 +5,10 @@
   <tr *ngFor="let letterRow of lettersMatrix(); let row = index">
     <td *ngFor="let letter of letterRow; let col = index">
       <span class="matrix-letters" [attr.id]="row+':'+col" [class.selector]="shouldHighlight(row,col)">
-        {{letter}}
+        <span *ngIf="isLetter(letter)">{{letter}}</span>
+        <span *ngIf="!isLetter(letter)">
+          <img class="matrix-image" [src]="getImgSrc(letter)">
+        </span>
       </span>
     </td>
   </tr>
