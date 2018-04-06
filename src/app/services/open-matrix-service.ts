@@ -7,7 +7,8 @@ export enum ACTION {
   FORWARD = 'FO',
   BACK = 'BA',
   HOME_PAGE = 'HO',
-  NO_ACTION = 'NO'
+  NO_ACTION = 'NO',
+  KEYBOARD = "KE"
 }
 
 declare var backgroundScript:any;
@@ -19,7 +20,7 @@ export class OpenMatrixService {
   private selectorIndex = {row: 0, col: 0};
   private letters =
     [[ACTION.NO_ACTION, ACTION.BACK, ACTION.FORWARD, ACTION.CLOSE_MATRIX],
-      [ACTION.HOME_PAGE, ACTION.REFRESH, 'A', 'B'],
+      [ACTION.HOME_PAGE, ACTION.REFRESH, ACTION.KEYBOARD, 'B'],
       ['C', 'D', 'E', 'F'],
       ['G', 'H', 'I', 'J'],
       ['K', 'L', 'M', 'N'],
@@ -54,8 +55,10 @@ export class OpenMatrixService {
     } else if (clickedIcon === ACTION.FORWARD) {
       backgroundScript.forward();
     } else if (clickedIcon === ACTION.HOME_PAGE) {
-      backgroundScript.goHome();
-    }
+      backgroundScript.home();
+    } else if (clickedIcon === ACTION.KEYBOARD) {
+      backgroundScript.keyboard();
+    } 
   }
 
   public shouldHighlight(row, col) {
@@ -113,6 +116,8 @@ export class OpenMatrixService {
       src = "assets/homepage_icon.png";
     } else if (str === ACTION.NO_ACTION) {
       src = "assets/no_action_icon.png";
+    } else if (str == ACTION.KEYBOARD) {
+      src = "assets/keyboard_icon.png";
     }
 
     return src;

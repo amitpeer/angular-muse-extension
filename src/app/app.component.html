@@ -1,7 +1,7 @@
 <div>
   <span>
-    <button (click)="centralize()" *ngIf="!isInCentralizeMode">Centralize</button>
-    <button (click)="stopCentralize()" *ngIf="isInCentralizeMode">Stop</button>
+    <button class="button" (click)="centralize()" *ngIf="!isInCentralizeMode">Centralize</button>
+    <button class="button" (click)="stopCentralize()" *ngIf="isInCentralizeMode">Stop</button>
   </span>
   <span>
     <button (click)="onConnectButtonClick()" *ngIf="!connected">Connect</button>

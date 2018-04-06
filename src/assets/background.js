@@ -18,8 +18,11 @@ var backgroundScript = (function () {
     forward: function () {
       callContentScript('forward');
     },
-    goHome: function () {
-      callContentScript('goHome');
+    home: function () {
+      callContentScript('home');
+    },
+    keyboard: function () {
+      callContentScript('keyboard');
     },
     minimize: function () {
       document.body.style.visibility = "hidden";

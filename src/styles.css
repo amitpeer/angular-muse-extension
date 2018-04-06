@@ -18,3 +18,8 @@
 .selector {
   background-color: yellow;
 }
+
+.button {
+  font-size: x-small;
+  font-family: cursive
+}
