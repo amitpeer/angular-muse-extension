@@ -44,11 +44,17 @@ export class OpenMatrixService {
   public click() {
     const clickedIcon = this.letters[this.selectorIndex.row][this.selectorIndex.col];
     if (this.isLetter(clickedIcon)) {
-      backgroundScript.doNavigation(this.letters[this.selectorIndex.row][this.selectorIndex.col]);
+      backgroundScript.doNavigation(clickedIcon);
     } else if (clickedIcon === ACTION.NO_ACTION) {
       return 'none';
     } else if (clickedIcon === ACTION.REFRESH) {
       backgroundScript.refresh();
+    } else if (clickedIcon === ACTION.BACK) {
+      backgroundScript.back();
+    } else if (clickedIcon === ACTION.FORWARD) {
+      backgroundScript.forward();
+    } else if (clickedIcon === ACTION.HOME_PAGE) {
+      backgroundScript.goHome();
     }
   }
 

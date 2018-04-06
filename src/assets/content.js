@@ -38,18 +38,35 @@ chrome.runtime.onMessage.addListener(
         window.location.href = linksOfLetters[request.letter];
         sendResponse({farewell: "goodbye"});
         break;
+
       case "scrollDown":
         console.log("content::scroll down");
         window.scrollBy(0, 15);
         break;
+
       case "scrollUp":
         console.log("content::scroll up");
         window.scrollBy(0, -15);
         break;
+
       case "refresh":
-        console.log("content::refresh")
+        console.log("content::refresh");
         location.reload();
-        // document.getElementsByTagName('body')[0].contentWindow.location.reload();
+        break;
+
+      case "back":
+        console.log("content::back");
+        window.history.go(-1);
+        break;
+
+      case "forward":
+        console.log("content::forward");
+        window.history.go(1);
+        break;
+
+      case "goHome":
+        console.log("content::goHome");
+        window.location.href = "https://www.google.com";
         break;
     }
   });

@@ -118,10 +118,6 @@ export class AppComponent {
       if (value === 1 && msSinceBlink > 2000) {
         this.blinkTime = Date.now();
         console.log('Right Blink! Performing Click', value);
-        const response = this.matrixState.click();
-        if (response !== 'none') {
-          this.stateChange();
-        }
       }
     });
 
@@ -149,7 +145,7 @@ export class AppComponent {
   }
 
   stopCentralize() {
-    this.adjustmentAccelerometerValue();
+    this.adjustAccelerometerValue();
     this.isInCentralizeMode = false;
   }
 
@@ -160,6 +156,13 @@ export class AppComponent {
     } else if (this.matrixState.getState() === STATE.CLOSE) {
       this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
+    }
+  }
+
+  private click() {
+    const response = this.matrixState.click();
+    if (response !== 'none') {
+      this.stateChange();
     }
   }
 
@@ -186,7 +189,7 @@ export class AppComponent {
     });
   }
 
-  private adjustmentAccelerometerValue() {
+  private adjustAccelerometerValue() {
     this.XYZ_accelometer.x = this.acceloAdjustedValueX;
     this.XYZ_accelometer.y = this.acceloAdjustedValueY + 0.25;
     this.XYZ_accelometer.z = this.acceloAdjustedValueZ;
@@ -213,7 +216,7 @@ export class AppComponent {
     }
 
     if (event.keyCode === KEY_CODE.ENTER) {
-      this.matrixState.click();
+      this.click();
     }
   }
 }
