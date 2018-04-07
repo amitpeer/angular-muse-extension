@@ -12,6 +12,7 @@ export class KeyboardService {
 
   public click() {
     backgroundScript.clickKeyboardLetter();
+    return 'none';
   }
 
   public headDown() {

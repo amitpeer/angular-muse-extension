@@ -47,23 +47,22 @@
     keyboardIndex = 0;
     keyboardIcon.click();
 
-    waitForKeyboardToExist();
-
-    keyboard = window.document.getElementsByClassName(LETTERS_SELECTOR);
-    keyboardCloseButton = window.document.getElementsByClassName(KEYBOARD_CLOSE_SELECTOR)[0];
-
-    // setKeyboardArray();
-    keyChanged();
+    waitForKeyboardToExist(setKeyboardArray);
   }
 
   function setKeyboardArray() {
+    const letters = window.document.getElementsByClassName(LETTERS_SELECTOR);
+    const keyboardCloseButton = window.document.getElementsByClassName(KEYBOARD_CLOSE_SELECTOR)[0];
+
     keyboard.push(keyboardCloseButton);
     for (let i = 0; i < letters.length; i++) {
       keyboard.push(letters[i])
     }
+
+    keyChanged();
   }
 
-  function moveInKeyboardTo(direction) {
+  function moveOnKeyboardTo(direction) {
     keyboard[keyboardIndex].style.background = "white";
 
     switch (direction) {
@@ -118,13 +117,16 @@
 
   function clickKeyboardLetter() {
     keyboard[keyboardIndex].click();
+    if (keyboardIndex === 0) {
+      return 'close';
+    }
   }
 
-  function waitForKeyboardToExist() {
+  function waitForKeyboardToExist(callback) {
     var checkExist = setInterval(function () {
-      if ($(KEYBOARD_SELECTOR).length) {
-        console.log("Exists!");
+      if (window.document.getElementById("kbd")) {
         clearInterval(checkExist);
+        callback();
       }
     }, 100);
   }
@@ -176,12 +178,15 @@
 
         case "moveOnKeyboard":
           console.log("content::keyboardRight");
-          moveInKeyboardTo(request.param);
+          moveOnKeyboardTo(request.param);
           break;
 
         case "clickKeyboardLetter":
           console.log("content::clickKeyboardLetter");
-          clickKeyboardLetter();
+          const response = clickKeyboardLetter();
+          if (response === 'close') {
+            sendResponse({close: 'true'});
+          }
           break;
       }
     });

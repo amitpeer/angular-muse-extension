@@ -49,6 +49,7 @@ function callContentScript(action) {
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, {type: action}, function (response) {
       console.log('background::after' + action);
+      closeKeyboardIfNeeded(response);
     });
   });
 }
@@ -59,5 +60,19 @@ function callContentScriptWithParam(action, additionalParam) {
     chrome.tabs.sendMessage(tabs[0].id, {type: action, param: additionalParam}, function (response) {
       console.log('background::after' + action);
     });
+  });
+}
+
+function closeKeyboardIfNeeded(response) {
+  if (response) {
+    if (response.close) {
+      changeState();
+    }
+  }
+}
+
+function changeState() {
+  window.angularComponentRef.zone.run(() => {
+    window.angularComponentRef.component.changeStateFromOutside();
   });
 }

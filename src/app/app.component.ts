@@ -1,4 +1,4 @@
-import {Component, HostListener} from "@angular/core";
+import {Component, HostListener, NgZone} from "@angular/core";
 import {channelNames, MuseClient, XYZ} from "muse-js";
 import {Observable} from "rxjs/Observable";
 import {merge} from "rxjs/observable/merge";
@@ -64,11 +64,12 @@ export class AppComponent {
   private START_DELAY = 2 * 1000;
 
   constructor(private openMatrixService:OpenMatrixService, private closeMatrixService:CloseMatrixService,
-              private keyboardService:KeyboardService) {
+              private keyboardService:KeyboardService, private zone:NgZone) {
     this.muse.connectionStatus.subscribe(newStatus => {
       this.connected = newStatus;
       this.matrixState = openMatrixService;
     });
+    window['angularComponentRef'] = {component: this, zone: zone};
   }
 
   lettersMatrix() {
@@ -162,16 +163,23 @@ export class AppComponent {
   }
 
   private stateChanged(changedTo?) {
+    var currentState = this.matrixState.getState();
     if (changedTo === STATE.KEYBOARD) {
       this.matrixState = this.keyboardService;
       backgroundScript.minimize();
-    } else if (this.matrixState.getState() === STATE.OPEN) {
+    } else if (currentState === STATE.OPEN) {
       this.matrixState = this.closeMatrixService;
       backgroundScript.minimize();
-    } else if (this.matrixState.getState() === STATE.CLOSE) {
+    } else if (currentState === STATE.CLOSE || currentState === STATE.KEYBOARD) {
       this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
     }
+  }
+
+  changeStateFromOutside() {
+    this.zone.run(() => {
+      this.stateChanged();
+    });
   }
 
   private startAccelerometer() {

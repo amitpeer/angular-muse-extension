@@ -40,7 +40,7 @@
         "assets/content.js",
         "assets/web-bluetooth/content-bluetooth.js"
       ],
-      "all_frames": true,
+      "all_frames": false,
       "run_at": "document_start"
     }
   ],
