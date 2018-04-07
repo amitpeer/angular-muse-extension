@@ -4,8 +4,8 @@
     <button class="button" (click)="stopCentralize()" *ngIf="isInCentralizeMode">Stop</button>
   </span>
   <span>
-    <button (click)="onConnectButtonClick()" *ngIf="!connected">Connect</button>
-    <button (click)="disconnect()" *ngIf="connected">Disconnect</button>
+    <button class="button" (click)="onConnectButtonClick()" *ngIf="!connected">Connect</button>
+    <button class="button" (click)="disconnect()" *ngIf="connected">Disconnect</button>
   </span>
 </div>
 <table class="table">

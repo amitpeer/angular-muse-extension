@@ -14,11 +14,13 @@ import {map, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs/Subject";
 import {OpenMatrixService} from "./services/open-matrix-service";
 import {CloseMatrixService} from "./services/close-matrix-service";
+import {KeyboardService} from "./services/keyboard-service";
 
 
 export enum STATE {
   OPEN = 'open',
-  CLOSE = 'close'
+  CLOSE = 'close',
+  KEYBOARD = 'keyboard'
 }
 
 declare var backgroundScript:any;
@@ -61,7 +63,8 @@ export class AppComponent {
   private matrixState;
   private START_DELAY = 2 * 1000;
 
-  constructor(private openMatrixService:OpenMatrixService, private closeMatrixService:CloseMatrixService) {
+  constructor(private openMatrixService:OpenMatrixService, private closeMatrixService:CloseMatrixService,
+              private keyboardService:KeyboardService) {
     this.muse.connectionStatus.subscribe(newStatus => {
       this.connected = newStatus;
       this.matrixState = openMatrixService;
@@ -88,8 +91,8 @@ export class AppComponent {
     return this.matrixState.shouldHighlight(row, col);
   }
 
-  public dataRecievedTreshHoldChange(treshHold) {
-    this.dataReceivedThreshHold = treshHold;
+  public dataReceivedThreshHoldChange(threshHold) {
+    this.dataReceivedThreshHold = threshHold;
   }
 
   async onConnectButtonClick() {
@@ -149,20 +152,25 @@ export class AppComponent {
     this.isInCentralizeMode = false;
   }
 
-  private stateChange() {
-    if (this.matrixState.getState() === STATE.OPEN) {
+  private click() {
+    const response = this.matrixState.click();
+    if (response === STATE.KEYBOARD) {
+      this.stateChanged(STATE.KEYBOARD)
+    } else if (response !== 'none') {
+      this.stateChanged();
+    }
+  }
+
+  private stateChanged(changedTo?) {
+    if (changedTo === STATE.KEYBOARD) {
+      this.matrixState = this.keyboardService;
+      backgroundScript.minimize();
+    } else if (this.matrixState.getState() === STATE.OPEN) {
       this.matrixState = this.closeMatrixService;
       backgroundScript.minimize();
     } else if (this.matrixState.getState() === STATE.CLOSE) {
       this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
-    }
-  }
-
-  private click() {
-    const response = this.matrixState.click();
-    if (response !== 'none') {
-      this.stateChange();
     }
   }
 

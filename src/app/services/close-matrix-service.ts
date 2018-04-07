@@ -19,7 +19,6 @@ export class CloseMatrixService {
     return 60;
   }
 
-
   public click() {
   }
 
@@ -44,7 +43,6 @@ export class CloseMatrixService {
 
   public headLeft() {
   }
-
 
   public getDataReceivedThreshold() {
     return this.dataReceivedThreshold;

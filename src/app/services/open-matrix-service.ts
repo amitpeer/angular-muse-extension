@@ -57,7 +57,8 @@ export class OpenMatrixService {
     } else if (clickedIcon === ACTION.HOME_PAGE) {
       backgroundScript.home();
     } else if (clickedIcon === ACTION.KEYBOARD) {
-      backgroundScript.keyboard();
+      backgroundScript.openKeyboard();
+      return 'keyboard';
     } 
   }
 

@@ -1,7 +1,7 @@
 var backgroundScript = (function () {
   return {
     doNavigation: function (letter) {
-      navigateContentScript('navigate', letter);
+      callContentScriptWithParam('navigate', letter);
     },
     scrollDown: function () {
       callContentScript('scrollDown');
@@ -21,8 +21,14 @@ var backgroundScript = (function () {
     home: function () {
       callContentScript('home');
     },
-    keyboard: function () {
-      callContentScript('keyboard');
+    openKeyboard: function () {
+      callContentScript('openKeyboard');
+    },
+    clickKeyboardLetter: function () {
+      callContentScript('clickKeyboardLetter');
+    },
+    moveOnKeyboard: function (direction) {
+      callContentScriptWithParam('moveOnKeyboard', direction);
     },
     minimize: function () {
       document.body.style.visibility = "hidden";
@@ -47,10 +53,10 @@ function callContentScript(action) {
   });
 }
 
-function navigateContentScript(action, letter) {
+function callContentScriptWithParam(action, additionalParam) {
   console.log('background::' + action);
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {type: action, letter: letter}, function (response) {
+    chrome.tabs.sendMessage(tabs[0].id, {type: action, param: additionalParam}, function (response) {
       console.log('background::after' + action);
     });
   });
