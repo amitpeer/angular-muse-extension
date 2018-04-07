@@ -5,6 +5,7 @@
   const KEYBOARD_SELECTOR = '#kdb';
   const KEYBOARD_CLOSE_SELECTOR = 'vk-t-btn-o';
   const LETTERS_SELECTOR = 'vk-btn';
+  const SEARCH_SELECTOR = 'btnK';
   const keyboardJump = 14;
 
   var keyboard = [];
@@ -122,6 +123,11 @@
     }
   }
 
+  function search() {
+    var searchButton = window.document.getElementsByName(SEARCH_SELECTOR)[0];
+    searchButton.click();
+  }
+
   function waitForKeyboardToExist(callback) {
     var checkExist = setInterval(function () {
       if (window.document.getElementById("kbd")) {
@@ -188,6 +194,10 @@
             sendResponse({close: 'true'});
           }
           break;
+
+        case "search":
+          console.log("content::search");
+          search();
       }
     });
 })();

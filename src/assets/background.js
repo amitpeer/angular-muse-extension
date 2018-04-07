@@ -30,6 +30,9 @@ var backgroundScript = (function () {
     moveOnKeyboard: function (direction) {
       callContentScriptWithParam('moveOnKeyboard', direction);
     },
+    search: function (direction) {
+      callContentScript('search');
+    },
     minimize: function () {
       document.body.style.visibility = "hidden";
       document.body.style.width = 0;
