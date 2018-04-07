@@ -1,26 +1,25 @@
 (function () { // Begin scoping function
   const componentLinks = {};
   const components = {};
-  const KEYBOARD_ICON_SELECTOR = "#gs_ok0";
-  const KEYBOARD_SELECTOR = "#kdb";
-  const KEYBOARD_CLOSE_SELECTOR = "vk-t-btn-o";
-  const LETTERS_SELECTOR = "vk-btn";
+  const KEYBOARD_ICON_SELECTOR = '#gs_ok0';
+  const KEYBOARD_SELECTOR = '#kdb';
+  const KEYBOARD_CLOSE_SELECTOR = 'vk-t-btn-o';
+  const LETTERS_SELECTOR = 'vk-btn';
   const keyboardJump = 14;
 
-  var keyboard;
+  var keyboard = [];
+  var letters;
   var keyboardIndex;
   var keyboardCloseButton;
 
   $(document).ready(function () {
-    console.log("content.js");
-
     const abcLetters =
       ["A", "B", "C", "D", "E", "F", "G",
         "H", "I", "J", "K", "L", "M", "N",
         "O", "P", "Q", "R", "S", "T", "U",
         "V", "W", "X", "Y", "Z"];
 
-    const aElements = $("a:visible");
+    const aElements = $('a:visible');
 
     for (let i = 0; i < abcLetters.length; i++) {
       const letter = document.createTextNode(" " + abcLetters[i]);
@@ -48,11 +47,20 @@
     keyboardIndex = 0;
     keyboardIcon.click();
 
-    sleep(500);
+    waitForKeyboardToExist();
 
     keyboard = window.document.getElementsByClassName(LETTERS_SELECTOR);
     keyboardCloseButton = window.document.getElementsByClassName(KEYBOARD_CLOSE_SELECTOR)[0];
+
+    // setKeyboardArray();
     keyChanged();
+  }
+
+  function setKeyboardArray() {
+    keyboard.push(keyboardCloseButton);
+    for (let i = 0; i < letters.length; i++) {
+      keyboard.push(letters[i])
+    }
   }
 
   function moveInKeyboardTo(direction) {
@@ -112,13 +120,13 @@
     keyboard[keyboardIndex].click();
   }
 
-  function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-      if ((new Date().getTime() - start) > milliseconds) {
-        break;
+  function waitForKeyboardToExist() {
+    var checkExist = setInterval(function () {
+      if ($(KEYBOARD_SELECTOR).length) {
+        console.log("Exists!");
+        clearInterval(checkExist);
       }
-    }
+    }, 100);
   }
 
   chrome.runtime.onMessage.addListener(
