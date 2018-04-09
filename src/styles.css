@@ -1,13 +1,12 @@
 #mainWindow {
-  width: fit-content;
+  width: 85px;
   height: fit-content;
   background-color: lightgray;
 }
 
 .matrix-letters {
   font-family: cursive;
-  font-size: x-large;
-  width: 100%
+  font-size: large;
 }
 
 .matrix-image {
@@ -21,5 +20,6 @@
 
 .button {
   font-size: x-small;
-  font-family: cursive
+  font-family: cursive;
+  width: 60px;
 }
