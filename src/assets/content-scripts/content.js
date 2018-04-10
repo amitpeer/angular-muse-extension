@@ -1,47 +1,12 @@
-(function () { // Begin scoping function
-  const componentLinks = {};
-  const components = {};
+(function () {
   const KEYBOARD_ICON_SELECTOR = '#gs_ok0';
-  const KEYBOARD_SELECTOR = '#kdb';
   const KEYBOARD_CLOSE_SELECTOR = 'vk-t-btn-o';
-  const LETTERS_SELECTOR = 'vk-btn';
+  const LETTERS_SELECTOR = '.vk-btn';
   const SEARCH_SELECTOR = 'btnK';
   const keyboardJump = 14;
 
   var keyboard = [];
-  var letters;
   var keyboardIndex;
-  var keyboardCloseButton;
-
-  $(document).ready(function () {
-    const abcLetters =
-      ["A", "B", "C", "D", "E", "F", "G",
-        "H", "I", "J", "K", "L", "M", "N",
-        "O", "P", "Q", "R", "S", "T", "U",
-        "V", "W", "X", "Y", "Z"];
-
-    const aElements = $('a:visible');
-
-    for (let i = 0; i < abcLetters.length; i++) {
-      const letter = document.createTextNode(" " + abcLetters[i]);
-      const backgroundSpan = document.createElement("span");
-      backgroundSpan.style.backgroundColor = "red";
-      backgroundSpan.style.border = "thin dotted blue";
-      backgroundSpan.style.opacity = 0.8;
-
-      const letterSpan = document.createElement("span");
-      letterSpan.style.fontSize = "20px";
-      letterSpan.style.opacity = 1;
-      letterSpan.style.color = "green";
-
-      letterSpan.appendChild(letter);
-      backgroundSpan.appendChild(letterSpan);
-      aElements[i].appendChild(backgroundSpan);
-
-      components[abcLetters[i]] = aElements[i];
-      componentLinks[abcLetters[i]] = aElements[i].href;
-    }
-  });
 
   function openKeyboard() {
     const keyboardIcon = $(KEYBOARD_ICON_SELECTOR);
@@ -52,7 +17,7 @@
   }
 
   function setKeyboardArray() {
-    const letters = window.document.getElementsByClassName(LETTERS_SELECTOR);
+    const letters = $(LETTERS_SELECTOR);
     const keyboardCloseButton = window.document.getElementsByClassName(KEYBOARD_CLOSE_SELECTOR)[0];
 
     keyboard.push(keyboardCloseButton);
@@ -123,11 +88,6 @@
     }
   }
 
-  function search() {
-    var searchButton = window.document.getElementsByName(SEARCH_SELECTOR)[0];
-    searchButton.click();
-  }
-
   function waitForKeyboardToExist(callback) {
     var checkExist = setInterval(function () {
       if (window.document.getElementById("kbd")) {
@@ -137,16 +97,14 @@
     }, 100);
   }
 
+  function search() {
+    var searchButton = window.document.getElementsByName(SEARCH_SELECTOR)[0];
+    searchButton.click();
+  }
+
   chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
       switch (request.type) {
-        case "navigate":
-          console.log("content::Received letter from the extension:" + request.letter);
-          // window.location.href = componentLinks[request.letter];
-          components[request.param].click();
-          sendResponse({farewell: "goodbye"});
-          break;
-
         case "scrollDown":
           console.log("content::scroll down");
           window.scrollBy(0, 15);

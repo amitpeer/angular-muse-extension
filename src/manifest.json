@@ -37,7 +37,8 @@
       ],
       "js": [
         "assets/jquery-3.3.1.min.js",
-        "assets/content.js",
+        "assets/content-scripts/content.js",
+        "assets/content-scripts/painter.js",
         "assets/web-bluetooth/content-bluetooth.js"
       ],
       "all_frames": false,
