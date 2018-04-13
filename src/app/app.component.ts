@@ -162,12 +162,12 @@ export class AppComponent {
     }
   }
 
-  private stateChanged(changedTo?) {
+  private stateChanged(changeTo?) {
     var currentState = this.matrixState.getState();
-    if (changedTo === STATE.KEYBOARD) {
+    if (changeTo === STATE.KEYBOARD) {
       this.matrixState = this.keyboardService;
       backgroundScript.minimize();
-    } else if (currentState === STATE.OPEN) {
+    } else if (changeTo === STATE.CLOSE || currentState === STATE.OPEN) {
       this.matrixState = this.closeMatrixService;
       backgroundScript.minimize();
     } else if (currentState === STATE.CLOSE || currentState === STATE.KEYBOARD) {
@@ -176,9 +176,9 @@ export class AppComponent {
     }
   }
 
-  changeStateFromOutside() {
+  changeStateFromOutside(changeTo?) {
     this.zone.run(() => {
-      this.stateChanged();
+      this.stateChanged(changeTo);
     });
   }
 

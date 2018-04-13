@@ -3,22 +3,46 @@
   const KEYBOARD_CLOSE_SELECTOR = '.vk-t-btn-o';
   const LETTERS_SELECTOR = '.vk-btn';
   const SEARCH_BUTTON_SELECTOR = 'btnK';
-  const keyboardJump = 14;
+  const KEYBOARD_CONTAINER_SELECTOR = '#kbd';
+  const SEARCH_INPUT_SELECTOR = "input[name='q']";
+
+  const KEYBOARD_JUMP = 14;
+  const SEARCH_INDEX = 40;
+  const DELETE_INDEX = 14;
 
   var keyboard = [];
   var keyboardIndex;
 
   function openKeyboard() {
     const keyboardIcon = $(KEYBOARD_ICON_SELECTOR);
+
+    //check if keyboard icon exists
+    // if (!keyboardIcon[0]) {
+    //   return false;
+    // }
+
     keyboardIndex = 0;
+    keyboard = [];
     keyboardIcon.click();
 
+    clearSearchInput();
     waitForKeyboardToExist(setKeyboardArray);
+  }
+
+  function waitForKeyboardToExist(callback) {
+    var checkExist = setInterval(function () {
+      if ($(KEYBOARD_CONTAINER_SELECTOR)) {
+        clearInterval(checkExist);
+        callback();
+      }
+    }, 100);
   }
 
   function setKeyboardArray() {
     const letters = $(LETTERS_SELECTOR);
     const keyboardCloseButton = $(KEYBOARD_CLOSE_SELECTOR)[0];
+
+    addCustomButtonsToKeyboard(letters);
 
     keyboard.push(keyboardCloseButton);
     for (let i = 0; i < letters.length; i++) {
@@ -26,6 +50,30 @@
     }
 
     keyChanged();
+  }
+
+  function addCustomButtonsToKeyboard(letters) {
+    if (!$("#added_search_button")[0]) {
+      const searchElement = document.createElement("span");
+      const searchTextNode = document.createTextNode("Search");
+
+      searchElement.setAttribute("id", "added_search_button");
+      searchElement.appendChild(searchTextNode);
+
+      letters[SEARCH_INDEX].appendChild(searchElement);
+      letters[SEARCH_INDEX].style.visibility = 'visible';
+    }
+
+    if (!$("#added_delete_button")[0]) {
+      const deleteElement = document.createElement("span");
+      const deleteTextNode = document.createTextNode("Delete");
+
+      deleteElement.setAttribute("id", "added_delete_button");
+      deleteElement.appendChild(deleteTextNode);
+
+      letters[DELETE_INDEX].appendChild(deleteElement);
+      letters[DELETE_INDEX].style.visibility = 'visible';
+    }
   }
 
   function moveOnKeyboardTo(direction) {
@@ -47,17 +95,17 @@
         }
         break;
       case 'up':
-        if (keyboardIndex - keyboardJump < 0) {
+        if (keyboardIndex - KEYBOARD_JUMP < 0) {
           keyboardIndex = 0;
         } else {
-          keyboardIndex -= keyboardJump;
+          keyboardIndex -= KEYBOARD_JUMP;
         }
         break;
       case 'down':
-        if (keyboardIndex + keyboardJump > keyboard.length - 1) {
+        if (keyboardIndex + KEYBOARD_JUMP > keyboard.length - 1) {
           keyboardIndex = keyboard.length - 1;
         } else {
-          keyboardIndex += keyboardJump;
+          keyboardIndex += KEYBOARD_JUMP;
         }
         break;
     }
@@ -81,26 +129,32 @@
     }
   }
 
-  function clickKeyboardLetter() {
+  function clickOnKeyboardLetter() {
     keyboard[keyboardIndex].click();
     if (keyboardIndex === 0) {
-      keyboardIndex = 0;
+      clearSearchInput();
+      closeKeyboard();
       return 'close';
+    } else if (keyboardIndex === SEARCH_INDEX + 1) { // +1 because close button was added to keyboard array
+      search();
+      return 'search';
+    } else if (keyboardIndex === DELETE_INDEX + 1) { // +1 because close button was added to keyboard array
+      clearSearchInput();
     }
   }
 
-  function waitForKeyboardToExist(callback) {
-    var checkExist = setInterval(function () {
-      if (window.document.getElementById("kbd")) {
-        clearInterval(checkExist);
-        callback();
-      }
-    }, 100);
+  function closeKeyboard() {
+    document.body.click();
   }
 
   function search() {
+    keyboardIndex = 0;
     var searchButton = window.document.getElementsByName(SEARCH_BUTTON_SELECTOR)[0];
     searchButton.click();
+  }
+
+  function clearSearchInput() {
+    $(SEARCH_INPUT_SELECTOR)[0].value = '';
   }
 
   chrome.runtime.onMessage.addListener(
@@ -118,15 +172,13 @@
 
         case "clickKeyboardLetter":
           console.log("content::clickKeyboardLetter");
-          const response = clickKeyboardLetter();
+          const response = clickOnKeyboardLetter();
           if (response === 'close') {
-            sendResponse({close: 'true'});
+            sendResponse({close: true});
+          } else if (response === 'search') {
+            sendResponse({search: true});
           }
           break;
-
-        case "search":
-          console.log("content::search");
-          search();
       }
     });
 })();

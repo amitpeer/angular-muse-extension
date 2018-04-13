@@ -8,8 +8,7 @@ export enum ACTION {
   BACK = 'BA',
   HOME_PAGE = 'HO',
   NO_ACTION = 'NO',
-  KEYBOARD = "KE",
-  SEARCH = "SE"
+  KEYBOARD = "KE"
 }
 
 declare var backgroundScript:any;
@@ -21,7 +20,7 @@ export class OpenMatrixService {
   private selectorIndex = {row: 0, col: 0};
   private letters =
     [[ACTION.NO_ACTION, ACTION.BACK, ACTION.FORWARD, ACTION.CLOSE_MATRIX],
-      [ACTION.HOME_PAGE, ACTION.REFRESH, ACTION.KEYBOARD, ACTION.SEARCH],
+      [ACTION.HOME_PAGE, ACTION.REFRESH, ACTION.KEYBOARD, 'A'],
       ['C', 'D', 'E', 'F'],
       ['G', 'H', 'I', 'J'],
       ['K', 'L', 'M', 'N'],
@@ -60,8 +59,6 @@ export class OpenMatrixService {
     } else if (clickedIcon === ACTION.KEYBOARD) {
       backgroundScript.openKeyboard();
       return 'keyboard';
-    } else if (clickedIcon === ACTION.SEARCH) {
-      backgroundScript.search();
     }
   }
 
@@ -139,8 +136,6 @@ export class OpenMatrixService {
       src = "assets/no_action_icon.png";
     } else if (str == ACTION.KEYBOARD) {
       src = "assets/keyboard_icon.png";
-    } else if (str == ACTION.SEARCH) {
-      src = "assets/search_icon.png";
     }
 
     return src;

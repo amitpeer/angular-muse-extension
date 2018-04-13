@@ -33,9 +33,6 @@ var backgroundScript = (function () {
     moveOnKeyboard: function (direction) {
       callContentScriptWithParam('moveOnKeyboard', direction);
     },
-    search: function (direction) {
-      callContentScript('search');
-    },
     minimize: function () {
       document.body.style.visibility = "hidden";
       document.body.style.width = 0;
@@ -73,12 +70,23 @@ function closeKeyboardIfNeeded(response) {
   if (response) {
     if (response.close) {
       changeState();
+    } else if (response.search) {
+      changeState('close')
+    } else if (response.keyboardNotFound) {
+      keyboardNotFound();
     }
   }
 }
 
-function changeState() {
+function changeState(changeTo) {
   window.angularComponentRef.zone.run(() => {
-    window.angularComponentRef.component.changeStateFromOutside();
+    window.angularComponentRef.component.changeStateFromOutside(changeTo);
+  });
+}
+
+function keyboardNotFound() {
+  alert("keyboard not found");
+  window.angularComponentRef.zone.run(() => {
+    window.angularComponentRef.component.changeStateFromOutside("open");
   });
 }
