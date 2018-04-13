@@ -10,15 +10,18 @@
   const SEARCH_INDEX = 40;
   const DELETE_INDEX = 14;
 
+  const JUMP_DOWN = [1, 14, 14, 13, 13, 13];
+  const JUMP_UP = [0, 13, 14, 14, 13];
+
   var keyboard = [];
   var keyboardIndex;
 
-  function openKeyboard() {
+  function openKeyboard(sendResponse) {
     const keyboardIcon = $(KEYBOARD_ICON_SELECTOR);
 
     // check if keyboard icon exists
     if (!keyboardIcon[0]) {
-      return false;
+      sendResponse({keyboardNotFound: true})
     }
 
     keyboardIndex = 0;
@@ -95,22 +98,72 @@
         }
         break;
       case 'up':
-        if (keyboardIndex - KEYBOARD_JUMP < 0) {
-          keyboardIndex = 0;
-        } else {
-          keyboardIndex -= KEYBOARD_JUMP;
-        }
+        jumpUp();
         break;
       case 'down':
-        if (keyboardIndex + KEYBOARD_JUMP > keyboard.length - 1) {
-          keyboardIndex = keyboard.length - 1;
-        } else {
-          keyboardIndex += KEYBOARD_JUMP;
-        }
+        jumpDown();
         break;
     }
 
     keyChanged(direction)
+  }
+
+  function jumpUp() {
+    const currentRow = getCurrentRow();
+
+    if (currentRow === 5) {
+      if (keyboardIndex === 54) {
+        keyboardIndex = 42;
+      } else if (keyboardIndex === 55) {
+        keyboardIndex = 47;
+      } else if (keyboardIndex === 56) {
+        keyboardIndex = 53;
+      }
+    } else {
+      const numberOfKeysToJump = JUMP_UP[currentRow];
+      if (keyboardIndex - numberOfKeysToJump < 0) {
+        keyboardIndex = 0;
+      } else {
+        keyboardIndex -= numberOfKeysToJump;
+      }
+    }
+  }
+
+  function jumpDown() {
+    const currentRow = getCurrentRow();
+
+    if (currentRow === 4) {
+      if (keyboardIndex === 42) {
+        keyboardIndex = 54;
+      } else if (keyboardIndex >= 43 && keyboardIndex <= 52) {
+        keyboardIndex = 55;
+      } else if (keyboardIndex === 53) {
+        keyboardIndex = 56;
+      }
+    } else {
+      const numberOfKeysToJump = JUMP_DOWN[currentRow];
+      if (keyboardIndex + numberOfKeysToJump > keyboard.length - 1) {
+        keyboardIndex = keyboard.length - 1;
+      } else {
+        keyboardIndex += numberOfKeysToJump;
+      }
+    }
+  }
+
+  function getCurrentRow() {
+    if (keyboardIndex === 0) {
+      return 0;
+    } else if (keyboardIndex >= 1 && keyboardIndex <= 14) {
+      return 1;
+    } else if (keyboardIndex >= 15 && keyboardIndex <= 28) {
+      return 2;
+    } else if (keyboardIndex >= 29 && keyboardIndex <= 41) {
+      return 3;
+    } else if (keyboardIndex >= 42 && keyboardIndex <= 53) {
+      return 4;
+    } else if (keyboardIndex >= 54 && keyboardIndex <= 56) {
+      return 5;
+    }
   }
 
   function keyChanged(direction = undefined) {
@@ -129,15 +182,15 @@
     }
   }
 
-  function clickOnKeyboardLetter() {
+  function clickOnKeyboardLetter(sendResponse) {
     keyboard[keyboardIndex].click();
     if (keyboardIndex === 0) {
       clearSearchInput();
       closeKeyboard();
-      return 'close';
+      sendResponse({close: true});
     } else if (keyboardIndex === SEARCH_INDEX + 1) { // +1 because close button was added to keyboard array
       search();
-      return 'search';
+      sendResponse({search: true});
     } else if (keyboardIndex === DELETE_INDEX + 1) { // +1 because close button was added to keyboard array
       clearSearchInput();
     }
@@ -162,10 +215,7 @@
       switch (request.type) {
         case "openKeyboard":
           console.log("content::openKeyboard");
-          const openKeyboardResponse = openKeyboard();
-          if (openKeyboardResponse === false) {
-            sendResponse({keyboardNotFound: true})
-          }
+          openKeyboard(sendResponse);
           break;
 
         case "moveOnKeyboard":
@@ -175,12 +225,7 @@
 
         case "clickKeyboardLetter":
           console.log("content::clickKeyboardLetter");
-          const clickResponse = clickOnKeyboardLetter();
-          if (clickResponse === 'close') {
-            sendResponse({close: true});
-          } else if (clickResponse === 'search') {
-            sendResponse({search: true});
-          }
+          clickOnKeyboardLetter(sendResponse);
           break;
       }
     });
