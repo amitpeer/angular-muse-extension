@@ -73,29 +73,46 @@ export class OpenMatrixService {
     return this.letters;
   }
 
+  public backgroundColorChange(exitLetterRowIndex) {
+    const exitLetter = this.letters[exitLetterRowIndex.row][exitLetterRowIndex.col];
+    if (this.isLetter(exitLetter)) {
+      const enterLetter = this.letters[this.selectorIndex.row][this.selectorIndex.col];
+      backgroundScript.matrixLetterChange(exitLetter, enterLetter);
+    }
+  }
+
   public headDown() {
     if (this.selectorIndex.row < this.letters.length - 1) {
+      const exitLetterIndexes = Object.assign({}, this.selectorIndex);
       this.selectorIndex.row++;
+      this.backgroundColorChange(exitLetterIndexes);
     }
   }
 
   public headUp() {
     if (this.selectorIndex.row > 0) {
+      const exitLetterIndexes = Object.assign({}, this.selectorIndex);
       this.selectorIndex.row--;
+      this.backgroundColorChange(exitLetterIndexes);
     }
   }
 
   public headRight() {
     if (this.selectorIndex.col < this.letters[0].length - 1) {
+      const exitLetterIndexes = Object.assign({}, this.selectorIndex);
       this.selectorIndex.col++;
+      this.backgroundColorChange(exitLetterIndexes);
     }
   }
 
   public headLeft() {
     if (this.selectorIndex.col > 0) {
+      const exitLetterIndexes = Object.assign({}, this.selectorIndex);
       this.selectorIndex.col--;
+      this.backgroundColorChange(exitLetterIndexes);
     }
   }
+
 
   public getDataReceivedThreshold() {
     return this.dataReceivedThreshold;

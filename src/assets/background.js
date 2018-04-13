@@ -3,6 +3,9 @@ var backgroundScript = (function () {
     doNavigation: function (letter) {
       callContentScriptWithParam('navigate', letter);
     },
+    matrixLetterChange: function (exitLetter, enterLetter) {
+      callContentScriptWithParam('matrixLetterChange', [exitLetter, enterLetter]);
+    },
     scrollDown: function () {
       callContentScript('scrollDown');
     },
