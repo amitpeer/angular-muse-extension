@@ -16,10 +16,10 @@
   function openKeyboard() {
     const keyboardIcon = $(KEYBOARD_ICON_SELECTOR);
 
-    //check if keyboard icon exists
-    // if (!keyboardIcon[0]) {
-    //   return false;
-    // }
+    // check if keyboard icon exists
+    if (!keyboardIcon[0]) {
+      return false;
+    }
 
     keyboardIndex = 0;
     keyboard = [];
@@ -162,7 +162,10 @@
       switch (request.type) {
         case "openKeyboard":
           console.log("content::openKeyboard");
-          openKeyboard();
+          const openKeyboardResponse = openKeyboard();
+          if (openKeyboardResponse === false) {
+            sendResponse({keyboardNotFound: true})
+          }
           break;
 
         case "moveOnKeyboard":
@@ -172,10 +175,10 @@
 
         case "clickKeyboardLetter":
           console.log("content::clickKeyboardLetter");
-          const response = clickOnKeyboardLetter();
-          if (response === 'close') {
+          const clickResponse = clickOnKeyboardLetter();
+          if (clickResponse === 'close') {
             sendResponse({close: true});
-          } else if (response === 'search') {
+          } else if (clickResponse === 'search') {
             sendResponse({search: true});
           }
           break;

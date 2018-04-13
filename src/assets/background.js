@@ -85,7 +85,6 @@ function changeState(changeTo) {
 }
 
 function keyboardNotFound() {
-  alert("keyboard not found");
   window.angularComponentRef.zone.run(() => {
     window.angularComponentRef.component.changeStateFromOutside("open");
   });

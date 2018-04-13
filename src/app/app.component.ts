@@ -170,7 +170,7 @@ export class AppComponent {
     } else if (changeTo === STATE.CLOSE || currentState === STATE.OPEN) {
       this.matrixState = this.closeMatrixService;
       backgroundScript.minimize();
-    } else if (currentState === STATE.CLOSE || currentState === STATE.KEYBOARD) {
+    } else if (changeTo === STATE.OPEN || currentState === STATE.CLOSE || currentState === STATE.KEYBOARD) {
       this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
     }
