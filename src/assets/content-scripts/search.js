@@ -1,5 +1,5 @@
 (function () {
-  const KEYBOARD_ICON_SELECTOR = '#gs_ok0';
+  const KEYBOARD_ICON_SELECTOR = 'gs_ok0';
   const KEYBOARD_CLOSE_SELECTOR = '.vk-t-btn-o';
   const LETTERS_SELECTOR = '.vk-btn';
   const SEARCH_BUTTON_SELECTOR = 'btnK';
@@ -17,19 +17,21 @@
   var keyboardIndex;
 
   function openKeyboard(sendResponse) {
-    const keyboardIcon = $(KEYBOARD_ICON_SELECTOR);
+    const keyboardIcon = window.document.getElementById(KEYBOARD_ICON_SELECTOR);
 
-    // check if keyboard icon exists
-    if (!keyboardIcon[0]) {
+    if (!keyboardIcon) {
+      //keyboard icon does not exist
+      console.log("key board not found");
       sendResponse({keyboardNotFound: true})
+    } else {
+      //keyboard icon exists
+      keyboardIndex = 0;
+      keyboard = [];
+      keyboardIcon.click();
+
+      clearSearchInput();
+      waitForKeyboardToExist(setKeyboardArray);
     }
-
-    keyboardIndex = 0;
-    keyboard = [];
-    keyboardIcon.click();
-
-    clearSearchInput();
-    waitForKeyboardToExist(setKeyboardArray);
   }
 
   function waitForKeyboardToExist(callback) {
@@ -132,13 +134,19 @@
   function jumpDown() {
     const currentRow = getCurrentRow();
 
-    if (currentRow === 4) {
+    if (keyboardIndex === 28) {
+      // if backslash, go to search
+      keyboardIndex = 41;
+    } else if (keyboardIndex === 41) {
+      // if search, go to shift
+      keyboardIndex = 53;
+    } else if (currentRow === 4) {
       if (keyboardIndex === 42) {
-        keyboardIndex = 54;
+        keyboardIndex = 54; // ctrl + alt (left)
       } else if (keyboardIndex >= 43 && keyboardIndex <= 52) {
-        keyboardIndex = 55;
+        keyboardIndex = 55; // space
       } else if (keyboardIndex === 53) {
-        keyboardIndex = 56;
+        keyboardIndex = 56; // ctrl + alt (right)
       }
     } else {
       const numberOfKeysToJump = JUMP_DOWN[currentRow];
