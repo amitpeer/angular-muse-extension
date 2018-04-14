@@ -6,10 +6,9 @@
   const KEYBOARD_CONTAINER_SELECTOR = '#kbd';
   const SEARCH_INPUT_SELECTOR = "input[name='q']";
 
-  const KEYBOARD_JUMP = 14;
+  const indexOfKey = setKeyToIndexMap();
   const SEARCH_INDEX = 40;
   const DELETE_INDEX = 14;
-
   const JUMP_DOWN = [1, 14, 14, 13, 13, 13];
   const JUMP_UP = [0, 13, 14, 14, 13];
 
@@ -58,26 +57,20 @@
   }
 
   function addCustomButtonsToKeyboard(letters) {
-    if (!$("#added_search_button")[0]) {
-      const searchElement = document.createElement("span");
-      const searchTextNode = document.createTextNode("Search");
+    addCustomButtonToKeyboard(letters, 'added_search_button', 'Search', SEARCH_INDEX);
+    addCustomButtonToKeyboard(letters, 'added_delete_button', 'Delete', DELETE_INDEX);
+  }
 
-      searchElement.setAttribute("id", "added_search_button");
-      searchElement.appendChild(searchTextNode);
+  function addCustomButtonToKeyboard(letters, selector, text, indexToInsert) {
+    if (!$('#' + selector)[0]) {
+      const element = document.createElement("span");
+      const textNode = document.createTextNode(text);
 
-      letters[SEARCH_INDEX].appendChild(searchElement);
-      letters[SEARCH_INDEX].style.visibility = 'visible';
-    }
+      element.setAttribute("id", selector);
+      element.appendChild(textNode);
 
-    if (!$("#added_delete_button")[0]) {
-      const deleteElement = document.createElement("span");
-      const deleteTextNode = document.createTextNode("Delete");
-
-      deleteElement.setAttribute("id", "added_delete_button");
-      deleteElement.appendChild(deleteTextNode);
-
-      letters[DELETE_INDEX].appendChild(deleteElement);
-      letters[DELETE_INDEX].style.visibility = 'visible';
+      letters[indexToInsert].appendChild(element);
+      letters[indexToInsert].style.visibility = 'visible';
     }
   }
 
@@ -111,18 +104,20 @@
   }
 
   function jumpUp() {
-    const currentRow = getCurrentRow();
+    if (keyboardIndex === indexOfKey['ctrl-alt-left']) {
+      keyboardIndex = indexOfKey['shift-left'];
+    } else if (keyboardIndex === indexOfKey['space']) {
+      keyboardIndex = indexOfKey['n-hebrew'];
+    } else if (keyboardIndex === indexOfKey['ctrl-alt-right']) {
+      keyboardIndex = indexOfKey['shift-right'];
+    } else if (keyboardIndex === indexOfKey['shift-right']) {
+      keyboardIndex = indexOfKey['search'];
+    } else if (keyboardIndex === indexOfKey['search']) {
+      keyboardIndex = indexOfKey['backslash'];
+    }
 
-    if (currentRow === 5) {
-      if (keyboardIndex === 54) {
-        keyboardIndex = 42;
-      } else if (keyboardIndex === 55) {
-        keyboardIndex = 47;
-      } else if (keyboardIndex === 56) {
-        keyboardIndex = 53;
-      }
-    } else {
-      const numberOfKeysToJump = JUMP_UP[currentRow];
+    else {
+      const numberOfKeysToJump = JUMP_UP[getCurrentRow()];
       if (keyboardIndex - numberOfKeysToJump < 0) {
         keyboardIndex = 0;
       } else {
@@ -132,45 +127,25 @@
   }
 
   function jumpDown() {
-    const currentRow = getCurrentRow();
+    if (keyboardIndex === indexOfKey['backslash']) {
+      keyboardIndex = indexOfKey['search'];
+    } else if (keyboardIndex === indexOfKey['search']) {
+      keyboardIndex = indexOfKey['shift-right'];
+    } else if (keyboardIndex === indexOfKey['shift-left']) {
+      keyboardIndex = indexOfKey['ctrl-alt-left'];
+    } else if (keyboardIndex >= indexOfKey['z-hebrew'] && keyboardIndex <= indexOfKey['dot']) {
+      keyboardIndex = indexOfKey['space'];
+    } else if (keyboardIndex === indexOfKey['shift-right']) {
+      keyboardIndex = indexOfKey['ctrl-alt-right'];
+    }
 
-    if (keyboardIndex === 28) {
-      // if backslash, go to search
-      keyboardIndex = 41;
-    } else if (keyboardIndex === 41) {
-      // if search, go to shift
-      keyboardIndex = 53;
-    } else if (currentRow === 4) {
-      if (keyboardIndex === 42) {
-        keyboardIndex = 54; // ctrl + alt (left)
-      } else if (keyboardIndex >= 43 && keyboardIndex <= 52) {
-        keyboardIndex = 55; // space
-      } else if (keyboardIndex === 53) {
-        keyboardIndex = 56; // ctrl + alt (right)
-      }
-    } else {
-      const numberOfKeysToJump = JUMP_DOWN[currentRow];
+    else {
+      const numberOfKeysToJump = JUMP_DOWN[getCurrentRow()];
       if (keyboardIndex + numberOfKeysToJump > keyboard.length - 1) {
         keyboardIndex = keyboard.length - 1;
       } else {
         keyboardIndex += numberOfKeysToJump;
       }
-    }
-  }
-
-  function getCurrentRow() {
-    if (keyboardIndex === 0) {
-      return 0;
-    } else if (keyboardIndex >= 1 && keyboardIndex <= 14) {
-      return 1;
-    } else if (keyboardIndex >= 15 && keyboardIndex <= 28) {
-      return 2;
-    } else if (keyboardIndex >= 29 && keyboardIndex <= 41) {
-      return 3;
-    } else if (keyboardIndex >= 42 && keyboardIndex <= 53) {
-      return 4;
-    } else if (keyboardIndex >= 54 && keyboardIndex <= 56) {
-      return 5;
     }
   }
 
@@ -216,6 +191,39 @@
 
   function clearSearchInput() {
     $(SEARCH_INPUT_SELECTOR)[0].value = '';
+  }
+
+  function getCurrentRow() {
+    if (keyboardIndex === 0) {
+      return 0;
+    } else if (keyboardIndex >= 1 && keyboardIndex <= 14) {
+      return 1;
+    } else if (keyboardIndex >= 15 && keyboardIndex <= 28) {
+      return 2;
+    } else if (keyboardIndex >= 29 && keyboardIndex <= 41) {
+      return 3;
+    } else if (keyboardIndex >= 42 && keyboardIndex <= 53) {
+      return 4;
+    } else if (keyboardIndex >= 54 && keyboardIndex <= 56) {
+      return 5;
+    }
+  }
+
+  function setKeyToIndexMap() {
+    const indexOfKey = {};
+
+    indexOfKey['backslash'] = 28;
+    indexOfKey['search'] = 41;
+    indexOfKey['shift-left'] = 42;
+    indexOfKey['z-hebrew'] = 43;
+    indexOfKey['n-hebrew'] = 47;
+    indexOfKey['dot'] = 52;
+    indexOfKey['shift-right'] = 53;
+    indexOfKey['ctrl-alt-left'] = 54;
+    indexOfKey['space'] = 55;
+    indexOfKey['ctrl-alt-right'] = 56;
+
+    return indexOfKey;
   }
 
   chrome.runtime.onMessage.addListener(
