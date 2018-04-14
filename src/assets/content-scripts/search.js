@@ -5,8 +5,9 @@
   const SEARCH_BUTTON_SELECTOR = 'btnK';
   const KEYBOARD_CONTAINER_SELECTOR = '#kbd';
   const SEARCH_INPUT_SELECTOR = "input[name='q']";
+  const SUGGESTIONS_SELECTOR = '.gstl_0';
 
-  const indexOfKey = setKeyToIndexMap();
+  const indexOfKey = mapKeyToIndex();
   const SEARCH_INDEX = 40;
   const DELETE_INDEX = 14;
   const JUMP_DOWN = [1, 14, 14, 13, 13, 13];
@@ -14,6 +15,7 @@
 
   var keyboard = [];
   var keyboardIndex;
+  var pressedKeysCounter;
 
   function openKeyboard(sendResponse) {
     const keyboardIcon = window.document.getElementById(KEYBOARD_ICON_SELECTOR);
@@ -25,6 +27,7 @@
     } else {
       //keyboard icon exists
       keyboardIndex = 0;
+      pressedKeysCounter = 0;
       keyboard = [];
       keyboardIcon.click();
 
@@ -166,21 +169,20 @@
   }
 
   function clickOnKeyboardLetter(sendResponse) {
+    pressedKeysCounter++;
+    enableSuggestionBox();
     keyboard[keyboardIndex].click();
     if (keyboardIndex === 0) {
       clearSearchInput();
-      closeKeyboard();
+      disableSuggestionBox();
       sendResponse({close: true});
     } else if (keyboardIndex === SEARCH_INDEX + 1) { // +1 because close button was added to keyboard array
       search();
       sendResponse({search: true});
     } else if (keyboardIndex === DELETE_INDEX + 1) { // +1 because close button was added to keyboard array
+      disableSuggestionBox();
       clearSearchInput();
     }
-  }
-
-  function closeKeyboard() {
-    document.body.click();
   }
 
   function search() {
@@ -191,6 +193,29 @@
 
   function clearSearchInput() {
     $(SEARCH_INPUT_SELECTOR)[0].value = '';
+    for (let i = 0; i < pressedKeysCounter; i++) {
+      keyboard[indexOfKey['backspace']].click();
+    }
+  }
+
+  function enableSuggestionBox() {
+    try {
+      const suggestionBox = $(SUGGESTIONS_SELECTOR)[1];
+      if (suggestionBox && suggestionBox.style.visibility != "visible") {
+        suggestionBox.style.visibility = "visible";
+      }
+    } catch (err) {
+    }
+  }
+
+  function disableSuggestionBox() {
+    try {
+      const suggestionBox = $(SUGGESTIONS_SELECTOR)[1];
+      if (suggestionBox && suggestionBox.style.visibility != "hidden") {
+        suggestionBox.style.visibility = "hidden";
+      }
+    } catch (err) {
+    }
   }
 
   function getCurrentRow() {
@@ -209,9 +234,10 @@
     }
   }
 
-  function setKeyToIndexMap() {
+  function mapKeyToIndex() {
     const indexOfKey = {};
 
+    indexOfKey['backspace'] = 14;
     indexOfKey['backslash'] = 28;
     indexOfKey['search'] = 41;
     indexOfKey['shift-left'] = 42;
