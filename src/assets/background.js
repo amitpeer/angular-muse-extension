@@ -33,6 +33,9 @@ var backgroundScript = (function () {
     moveOnKeyboard: function (direction) {
       callContentScriptWithParam('moveOnKeyboard', direction);
     },
+    gapLetters: function () {
+      callContentScript('gapLetters');
+    },
     minimize: function () {
       document.body.style.visibility = "hidden";
       document.body.style.width = 0;
