@@ -8,7 +8,7 @@ export enum ACTION {
   BACK = 'BA',
   HOME_PAGE = 'HO',
   NO_ACTION = 'NO',
-  KEYBOARD = "KE"
+  KEYBOARD = "KE",
   GAP_LETTERS = "GL"
 }
 
@@ -28,7 +28,7 @@ export class OpenMatrixService {
       ['O', 'P', 'Q', 'R'],
       ['S', 'T', 'U', 'V'],
       ['W', 'X', 'Y', 'Z'],
-      [ACTION.GAP_LETTERS, '?', '?', '?'];
+      [ACTION.GAP_LETTERS, '?', '?', '?']];
 
   private dataReceivedThreshold = 8;
   private app;
