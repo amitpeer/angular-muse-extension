@@ -9,6 +9,7 @@ export enum ACTION {
   HOME_PAGE = 'HO',
   NO_ACTION = 'NO',
   KEYBOARD = "KE"
+  GAP_LETTERS = "GL"
 }
 
 declare var backgroundScript:any;
@@ -26,7 +27,8 @@ export class OpenMatrixService {
       ['K', 'L', 'M', 'N'],
       ['O', 'P', 'Q', 'R'],
       ['S', 'T', 'U', 'V'],
-      ['W', 'X', 'Y', 'Z']];
+      ['W', 'X', 'Y', 'Z'],
+      [ACTION.GAP_LETTERS, '?', '?', '?'];
 
   private dataReceivedThreshold = 8;
   private app;
@@ -59,6 +61,8 @@ export class OpenMatrixService {
     } else if (clickedIcon === ACTION.KEYBOARD) {
       backgroundScript.openKeyboard();
       return 'keyboard';
+    } else if (clickedIcon === ACTION.GAP_LETTERS) {
+      backgroundScript.gapLetters();
     }
   }
 
@@ -136,6 +140,8 @@ export class OpenMatrixService {
       src = "assets/no_action_icon.png";
     } else if (str == ACTION.KEYBOARD) {
       src = "assets/keyboard_icon.png";
+    } else if (str == ACTION.GAP_LETTERS) {
+      src = "assets/search_icon.png";
     }
 
     return src;
