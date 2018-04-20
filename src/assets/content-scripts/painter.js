@@ -13,7 +13,7 @@
       "V", "W", "X", "Y", "Z"];
 
   function paintNextLetter() {
-    const numberOfJumps = firstElementIndex/NEXT_N_LETTERS;
+    const numberOfJumps = firstElementIndex / NEXT_N_LETTERS;
     for (let i = firstElementIndex; i < NEXT_N_LETTERS + firstElementIndex && i < aElements.length; i++) {
       const letterIndex = i - numberOfJumps * NEXT_N_LETTERS;
       const letter = document.createTextNode(" " + abcLetters[letterIndex]);
