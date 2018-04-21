@@ -38,7 +38,7 @@
 
   function waitForKeyboardToExist(callback) {
     var checkExist = setInterval(function () {
-      if ($(KEYBOARD_CONTAINER_SELECTOR)) {
+      if ($(KEYBOARD_CONTAINER_SELECTOR)[0]) {
         clearInterval(checkExist);
         callback();
       }
