@@ -10,7 +10,6 @@
   "icons": {
     "32": "assets/icon.png"
   },
-
   "permissions": [
     "nativeMessaging",
     "tabs",
@@ -26,6 +25,17 @@
       "assets/web-bluetooth/gatt-services.js",
       "assets/web-bluetooth/gatt-characteristics.js"
     ]
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y",
+        "chromeos": "Ctrl+Shift+U",
+        "linux": "Ctrl+Shift+J"
+      },
+      "global": "true"
+    }
   },
   "content_scripts": [
     {
