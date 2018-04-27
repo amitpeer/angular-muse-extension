@@ -55,9 +55,15 @@ function callContentScript(action) {
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, {type: action}, function (response) {
       console.log('background::after' + action);
-      closeKeyboardIfNeeded(response);
+      closeGoogleKeyboardIfNeeded(response);
     });
   });
+}
+
+function openKeyboardIfNeeded(response) {
+  if (response.input) {
+    console.log("open keyboard please");
+  }
 }
 
 function callContentScriptWithParam(action, additionalParam) {
@@ -65,11 +71,12 @@ function callContentScriptWithParam(action, additionalParam) {
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, {type: action, param: additionalParam}, function (response) {
       console.log('background::after' + action);
+      openKeyboardIfNeeded(response)
     });
   });
 }
 
-function closeKeyboardIfNeeded(response) {
+function closeGoogleKeyboardIfNeeded(response) {
   if (response) {
     if (response.close) {
       changeState();

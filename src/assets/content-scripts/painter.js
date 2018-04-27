@@ -79,14 +79,25 @@
     paintNextLetter();
   }
 
+  function getComponentType(letter) {
+    return components[letter].tagName;
+  }
+
+  function click(letter) {
+    // window.location.href = componentLinks[letter];
+    components[letter].click();
+  }
+
   chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
       switch (request.type) {
         case "navigate":
           console.log("painter::Received letter from the extension:" + request.param);
-          // window.location.href = componentLinks[request.letter];
-          components[request.param].click();
-          sendResponse({farewell: "goodbye"});
+          if (getComponentType(request.param) === "A") {
+            click(request.param);
+          } else if (getComponentType(request.param) === "INPUT") {
+            sendResponse({input: components[request.param].id});
+          }
           break;
         case "matrixLetterChange":
           console.log("painter::Received matrixMovement from the extension:" + request.param);
