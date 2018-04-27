@@ -59,6 +59,11 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
     "assets/web-bluetooth/polyfill.js",
-    "index.html"
+    "index.html",
+    "assets/keyboard/keyboard-black.css",
+    "assets/keyboard/keyboard-black.html",
+    "assets/keyboard/keyboard-white.html",
+    "assets/keyboard/keyboard-white.css",
+    "assets/keyboard/keyboard-white.js"
   ]
 }

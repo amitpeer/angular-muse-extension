@@ -3,7 +3,7 @@
   const componentLinks = {};
   const components = {};
 
-  let aElements;
+  let clickableElements;
   let firstElementIndex = 0;
 
   const abcLetters =
@@ -14,7 +14,7 @@
 
   function paintNextLetter() {
     const numberOfJumps = firstElementIndex / NEXT_N_LETTERS;
-    for (let i = firstElementIndex; i < NEXT_N_LETTERS + firstElementIndex && i < aElements.length; i++) {
+    for (let i = firstElementIndex; i < NEXT_N_LETTERS + firstElementIndex && i < clickableElements.length; i++) {
       const letterIndex = i - numberOfJumps * NEXT_N_LETTERS;
       const letter = document.createTextNode(" " + abcLetters[letterIndex]);
       const backgroundSpan = document.createElement("span");
@@ -30,10 +30,21 @@
 
       letterSpan.appendChild(letter);
       backgroundSpan.appendChild(letterSpan);
-      aElements[i].appendChild(backgroundSpan);
+      addLetterToElement(clickableElements[i], backgroundSpan);
+      // clickableElements[i].appendChild(backgroundSpan);
 
-      components[abcLetters[letterIndex]] = aElements[i];
-      componentLinks[abcLetters[letterIndex]] = aElements[i].href;
+      components[abcLetters[letterIndex]] = clickableElements[i];
+      componentLinks[abcLetters[letterIndex]] = clickableElements[i].href;
+    }
+  }
+
+  function addLetterToElement(element, letter) {
+    if (element.tagName === 'INPUT') {
+      var parent = element.parentNode;
+      parent.replaceChild(letter, element);
+      letter.appendChild(element);
+    } else {
+      element.appendChild(letter);
     }
   }
 
@@ -45,9 +56,22 @@
   }
 
   window.onload = function () {
-    aElements = $('a:visible');
+    let aElements = $('a:visible');
+    let textInputElements = $("input:text, input:password");
+    clickableElements = $.merge(textInputElements, aElements);
     paintNextLetter();
   };
+
+  function openKeyboard(location) {
+    $.get(chrome.extension.getURL('assets/keyboard/keyboard-white.html'), function (data) {
+      $(data).appendTo(location);
+      var link = document.createElement("link");
+      link.href = chrome.extension.getURL('assets/keyboard/keyboard-white.css');
+      link.type = "text/css";
+      link.rel = "stylesheet";
+      document.getElementsByTagName("head")[0].appendChild(link);
+    });
+  }
 
   function gapLetters() {
     firstElementIndex = firstElementIndex + NEXT_N_LETTERS;
