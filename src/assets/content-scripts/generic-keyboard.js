@@ -214,7 +214,7 @@
       $('.letter').toggleClass('uppercase');
       $('.symbol span').toggle();
 
-      shift = (shift === true) ? false : true;
+      shift = !shift;
       capslock = false;
       return false;
     }
