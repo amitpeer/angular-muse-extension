@@ -50,6 +50,7 @@
         "assets/content-scripts/browser-actions.js",
         "assets/content-scripts/painter.js",
         "assets/content-scripts/search.js",
+        "assets/content-scripts/keyboard.js",
         "assets/web-bluetooth/content-bluetooth.js"
       ],
       "all_frames": false,

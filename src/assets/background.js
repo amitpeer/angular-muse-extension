@@ -60,12 +60,6 @@ function callContentScript(action) {
   });
 }
 
-function openKeyboardIfNeeded(response) {
-  if (response.input) {
-    console.log("open keyboard please");
-  }
-}
-
 function callContentScriptWithParam(action, additionalParam) {
   console.log('background::' + action);
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
@@ -74,6 +68,14 @@ function callContentScriptWithParam(action, additionalParam) {
       openKeyboardIfNeeded(response)
     });
   });
+}
+
+function openKeyboardIfNeeded(response) {
+  if (response && response.input) {
+    console.log("open keyboard please");
+    changeState('keyboard');
+    callContentScriptWithParam("openKeyboard", response.input)
+  }
 }
 
 function closeGoogleKeyboardIfNeeded(response) {
