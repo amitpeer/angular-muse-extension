@@ -255,18 +255,18 @@
   chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
       switch (request.type) {
-        case "openKeyboard":
-          console.log("content::openKeyboard");
+        case "openGoogleKeyboard":
+          console.log("content::openGoogleKeyboard");
           openKeyboard(sendResponse);
           break;
 
-        case "moveOnKeyboard":
-          console.log("content::keyboardRight");
+        case "moveOnGoogleKeyboard":
+          console.log("content::moveOnGoogleKeyboard");
           moveOnKeyboardTo(request.param);
           break;
 
-        case "clickKeyboardLetter":
-          console.log("content::clickKeyboardLetter");
+        case "clickGoogleKeyboardLetter":
+          console.log("content::clickGoogleKeyboardLetter");
           clickOnKeyboardLetter(sendResponse);
           break;
       }

@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import "assets/background.js";
+import {STATE} from "../states";
 
 export enum ACTION {
   CLOSE_MATRIX = 'CM',
@@ -59,8 +60,8 @@ export class OpenMatrixService {
     } else if (clickedIcon === ACTION.HOME_PAGE) {
       backgroundScript.home();
     } else if (clickedIcon === ACTION.KEYBOARD) {
-      backgroundScript.openKeyboard();
-      return 'keyboard';
+      backgroundScript.openGoogleKeyboard();
+      return STATE.GOOGLE_KEYBOARD;
     } else if (clickedIcon === ACTION.GAP_LETTERS) {
       backgroundScript.gapLetters();
     }

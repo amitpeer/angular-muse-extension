@@ -1,34 +1,35 @@
 import {Injectable} from "@angular/core";
 import "assets/background.js";
+import {STATE} from "../states";
 
 declare var backgroundScript:any;
 
 @Injectable()
-export class KeyboardService {
+export class GenericKeyboardService {
 
   public getState() {
-    return 'keyboard';
+    return STATE.GENERIC_KEYBOARD;
   }
 
   public click() {
-    backgroundScript.clickKeyboardLetter();
+    backgroundScript.clickGenericKeyboardLetter();
     return 'none';
   }
 
   public headDown() {
-    backgroundScript.moveOnKeyboard('down');
+    backgroundScript.moveOnGenericKeyboard('down');
   }
 
   public headUp() {
-    backgroundScript.moveOnKeyboard('up');
+    backgroundScript.moveOnGenericKeyboard('up');
   }
 
   public headRight() {
-    backgroundScript.moveOnKeyboard('right');
+    backgroundScript.moveOnGenericKeyboard('right');
   }
 
   public headLeft() {
-    backgroundScript.moveOnKeyboard('left');
+    backgroundScript.moveOnGenericKeyboard('left');
   }
 
   public getHeadSensibility() {

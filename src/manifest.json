@@ -49,8 +49,8 @@
         "assets/jquery-3.3.1.min.js",
         "assets/content-scripts/browser-actions.js",
         "assets/content-scripts/painter.js",
-        "assets/content-scripts/search.js",
-        "assets/content-scripts/keyboard.js",
+        "assets/content-scripts/google-keyboard.js",
+        "assets/content-scripts/generic-keyboard.js",
         "assets/web-bluetooth/content-bluetooth.js"
       ],
       "all_frames": false,

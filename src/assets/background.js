@@ -24,14 +24,20 @@ var backgroundScript = (function () {
     home: function () {
       callContentScript('home');
     },
-    openKeyboard: function () {
-      callContentScript('openKeyboard');
+    openGoogleKeyboard: function () {
+      callContentScript('openGoogleKeyboard');
     },
-    clickKeyboardLetter: function () {
-      callContentScript('clickKeyboardLetter');
+    clickGoogleKeyboardLetter: function () {
+      callContentScript('clickGoogleKeyboardLetter');
     },
-    moveOnKeyboard: function (direction) {
-      callContentScriptWithParam('moveOnKeyboard', direction);
+    moveOnGoogleKeyboard: function (direction) {
+      callContentScriptWithParam('moveOnGoogleKeyboard', direction);
+    },
+    clickGenericKeyboardLetter: function () {
+      callContentScript('clickGenericKeyboardLetter');
+    },
+    moveOnGenericKeyboard: function (direction) {
+      callContentScriptWithParam('moveOnGenericKeyboard', direction);
     },
     gapLetters: function () {
       callContentScript('gapLetters');
@@ -65,16 +71,16 @@ function callContentScriptWithParam(action, additionalParam) {
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, {type: action, param: additionalParam}, function (response) {
       console.log('background::after' + action);
-      openKeyboardIfNeeded(response)
+      openGenericKeyboardIfNeeded(response)
     });
   });
 }
 
-function openKeyboardIfNeeded(response) {
+function openGenericKeyboardIfNeeded(response) {
   if (response && response.input) {
     console.log("open keyboard please");
-    changeState('keyboard');
-    callContentScriptWithParam("openKeyboard", response.input)
+    changeState('generic_keyboard');
+    callContentScriptWithParam("openGenericKeyboard", response.input)
   }
 }
 
@@ -83,7 +89,7 @@ function closeGoogleKeyboardIfNeeded(response) {
     if (response.close) {
       changeState();
     } else if (response.search) {
-      changeState('close')
+      changeState("close")
     } else if (response.keyboardNotFound) {
       keyboardNotFound();
     }
