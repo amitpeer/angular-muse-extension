@@ -9,7 +9,7 @@
   const KEYBOARD_ELEMENTS_SELECTOR = 'li[name=muse-keyboard-element]';
 
   async function openKeyboard(id) {
-    $write = $('#' + id);
+    $write = $('#' + id + '> input');
     keyboardIndex = 0;
     clearSelectedInput();
 
