@@ -32,6 +32,14 @@
           console.log("content::home");
           window.location.href = "https://www.google.com";
           break;
+
+        case "submitForm":
+          console.log("content::submitForm");
+          let form = $('form');
+          if (form) {
+            form.submit();
+          }
+          break;
       }
     });
 })();

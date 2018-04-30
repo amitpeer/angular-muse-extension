@@ -42,6 +42,9 @@ var backgroundScript = (function () {
     gapLetters: function () {
       callContentScript('gapLetters');
     },
+    submitForm: function () {
+      callContentScript('submitForm');
+    },
     minimize: function () {
       document.body.style.visibility = "hidden";
       document.body.style.width = 0;

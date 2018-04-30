@@ -9,8 +9,9 @@ export enum ACTION {
   BACK = 'BA',
   HOME_PAGE = 'HO',
   NO_ACTION = 'NO',
-  KEYBOARD = "KE",
-  GAP_LETTERS = "GL"
+  KEYBOARD = 'KE',
+  GAP_LETTERS = 'GL',
+  SEARCH = 'SE'
 }
 
 declare var backgroundScript:any;
@@ -22,7 +23,7 @@ export class OpenMatrixService {
   private selectorIndex = {row: 0, col: 0};
   private letters =
     [[ACTION.NO_ACTION, ACTION.BACK, ACTION.FORWARD, ACTION.CLOSE_MATRIX],
-      [ACTION.HOME_PAGE, ACTION.REFRESH, ACTION.KEYBOARD, ACTION.GAP_LETTERS],
+      [ACTION.HOME_PAGE, ACTION.REFRESH, ACTION.SEARCH, ACTION.GAP_LETTERS],
       ['A', 'B', 'C', 'D'],
       ['E', 'F', 'G', 'H'],
       ['I', 'J', 'K', 'L'],
@@ -64,6 +65,8 @@ export class OpenMatrixService {
       return STATE.GOOGLE_KEYBOARD;
     } else if (clickedIcon === ACTION.GAP_LETTERS) {
       backgroundScript.gapLetters();
+    } else if (clickedIcon === ACTION.SEARCH) {
+      backgroundScript.submitForm();
     }
   }
 
@@ -139,10 +142,12 @@ export class OpenMatrixService {
       src = "assets/homepage_icon.png";
     } else if (str === ACTION.NO_ACTION) {
       src = "assets/no_action_icon.png";
+    } else if (str == ACTION.SEARCH) {
+      src = "assets/search_icon.png";
+    } else if (str == ACTION.GAP_LETTERS) {
+      src = "assets/keyboard_icon.png";
     } else if (str == ACTION.KEYBOARD) {
       src = "assets/keyboard_icon.png";
-    } else if (str == ACTION.GAP_LETTERS) {
-      src = "assets/search_icon.png";
     }
 
     return src;
