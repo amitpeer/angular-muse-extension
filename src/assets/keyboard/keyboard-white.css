@@ -3,26 +3,30 @@
   padding: 0;
 }
 
-body {
-  font: 71%/1.5 Verdana, Sans-Serif;
-  background: #eee;
-}
-
 #muse-keyboard-container {
+  font: 71%/1.5 Verdana, Sans-Serif;
+  font-size: small;
   margin: 100px auto;
   width: 688px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: aquamarine;
+  z-index: 99999;
 }
 
-#write {
-  margin: 0 0 5px;
+#muse-write {
+  margin: 0 auto;
   padding: 5px;
-  width: 671px;
-  height: 200px;
+  width: 200px;
+  height: 35px;
   font: 1em/1.5 Verdana, Sans-Serif;
-  background: #fff;
   border: 1px solid #f9f9f9;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+  position: relative;
+  display: block;
+  background-color: gold;
 }
 
 #muse-keyboard {
@@ -39,9 +43,10 @@ body {
   line-height: 40px;
   text-align: center;
   background: #fff;
-  border: 1px solid #f9f9f9;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+  border: 1px solid #f9f9f9;
+  border-color: black;
 }
 
 .capslock, .tab, .left-shift {

@@ -1,23 +1,24 @@
 (function () {
   let keyboardElements = [];
   let keyboardIndex;
-  let $write;
+  let userSelectedInputElement;
+  let keyboardInputElement;
   let shift = false;
   let capslock = false;
 
   const specialKeys = {};
   const KEYBOARD_ELEMENTS_SELECTOR = 'li[name=muse-keyboard-element]';
+  const KEYBOARD_INPUT_SELECTOR = '#muse-write';
 
   async function openKeyboard(id) {
-    $write = $('#' + id + '> input');
+    userSelectedInputElement = $('#' + id + '> input');
     keyboardIndex = 0;
-    clearSelectedInput();
 
     // perform GET call to get the keyboard's html as data
     await $.get(chrome.extension.getURL('assets/keyboard/keyboard-white.html'), function (data) {
 
-      // inject keyboard's HTML into the DOM (as a brother of the pressed input)
-      $(data).insertAfter($write);
+      // inject keyboard in body element
+      $(data).appendTo('body');
 
       // add a link element to keyboard's CSS file (inside the <head> tag)
       var link = document.createElement("link");
@@ -26,19 +27,29 @@
       link.rel = "stylesheet";
       link.id = "muse-keyboard-style";
       document.getElementsByTagName("head")[0].appendChild(link);
+
+      // because of render issues, the input's value is always back after injecting the keyboard
+      // hence the timeout - clear the input after the render occurs
+      // this way the input's original value is not re-appearing
+      setTimeout(clearSelectedInput, 500);
     });
 
     // catch all keyboard elements
     keyboardElements = $(KEYBOARD_ELEMENTS_SELECTOR);
 
-    createSpecialKeysDictionary();
+    // catch keyboard's unique input element
+    keyboardInputElement = $(KEYBOARD_INPUT_SELECTOR);
 
-    // mark the first keyboard element (Esc)
+    // clear keyboard's input
+    keyboardInputElement[0].value = '';
+
+    clearSelectedInput();
+    createSpecialKeysDictionary();
     keyChanged();
   }
 
   function clearSelectedInput() {
-    $write[0].value = '';
+    userSelectedInputElement[0].value = '';
   }
 
   function moveOnKeyboardTo(direction) {
@@ -228,9 +239,7 @@
 
     // Delete
     if ($this.hasClass('delete')) {
-      var value = $write[0].value;
-
-      $write[0].value = value.substring(0, value.length - 1);
+      deleteCharacterFromInputs();
       return false;
     }
 
@@ -252,6 +261,25 @@
     }
 
     // Add the character
-    $write[0].value = $write[0].value + character;
+    addCharacterToInputs(character);
   }
+
+  function addCharacterToInputs(character) {
+    // add to the "real" input"
+    userSelectedInputElement[0].value = userSelectedInputElement[0].value + character;
+
+    // add to the keyboard's input
+    keyboardInputElement[0].value = keyboardInputElement[0].value + character;
+  }
+
+  function deleteCharacterFromInputs() {
+    // delete from the "real" input
+    var realInputValue = userSelectedInputElement[0].value;
+    userSelectedInputElement[0].value = realInputValue.substring(0, realInputValue.length - 1);
+
+    // delete from the keyboard's input
+    var keyboardInputValue = keyboardInputElement[0].value;
+    keyboardInputElement[0].value = keyboardInputValue.substring(0, keyboardInputValue.length - 1);
+  }
+
 })();
