@@ -124,12 +124,12 @@
     safeGetConcreteElement(letter).click()
   }
 
-  function painedLetterCollatedWithMatrix(nextLetter, lastLetter) {
+  function paintLetterElementAccordingToMatrix(nextLetter, lastLetter) {
     let coloredWithNewColor = safeGetLetterElement(nextLetter);
     let coloredWithDefaultColor = safeGetLetterElement(lastLetter);
 
-    coloredWithDefaultColor.style.backgroundColor = 'red';
-    coloredWithNewColor.style.backgroundColor = 'yellow';
+    coloredWithDefaultColor.childNodes[0].style.backgroundColor = 'red';
+    coloredWithNewColor.childNodes[0].style.backgroundColor = 'yellow';
 
   }
 
@@ -153,7 +153,7 @@
           break;
         case "matrixLetterChange":
           console.log("painter::Received matrixMovement from the extension:" + request.param);
-          painedLetterCollatedWithMatrix(request.param[1], request.param[0]);
+          paintLetterElementAccordingToMatrix(request.param[1], request.param[0]);
           sendResponse({farewell: "lighting"});
           break;
         case "gapLetters":
