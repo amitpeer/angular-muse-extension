@@ -1,7 +1,7 @@
 (function () {
   let keyboardElements = [];
   let keyboardIndex;
-  let userSelectedInputElement;
+  let input;
   let keyboardInputElement;
   let shift = false;
   let capslock = false;
@@ -11,8 +11,12 @@
   const KEYBOARD_INPUT_SELECTOR = '#muse-write';
 
   async function openKeyboard(id) {
-    userSelectedInputElement = $('#' + id + '> input');
+    input = $('#' + id + '> input');
     keyboardIndex = 0;
+
+    if (input[0].type === 'text') {
+      input[0].click();
+    }
 
     // perform GET call to get the keyboard's html as data
     await $.get(chrome.extension.getURL('assets/keyboard/keyboard-white.html'), function (data) {
@@ -49,7 +53,7 @@
   }
 
   function clearSelectedInput() {
-    userSelectedInputElement[0].value = '';
+    input[0].value = '';
   }
 
   function moveOnKeyboardTo(direction) {
@@ -181,6 +185,15 @@
     // remove keyboard's style link from DOM
     let keyboardStyle = $('#muse-keyboard-style')[0];
     keyboardStyle.parentNode.removeChild(keyboardStyle);
+
+    submitFormInGoogleSearchPage();
+  }
+
+  function submitFormInGoogleSearchPage() {
+    let searchForm = $('form[role=search]');
+    if (searchForm && window.location.href.includes("google")) {
+      searchForm.submit();
+    }
   }
 
   function createSpecialKeysDictionary() {
@@ -266,7 +279,7 @@
 
   function addCharacterToInputs(character) {
     // add to the "real" input"
-    userSelectedInputElement[0].value = userSelectedInputElement[0].value + character;
+    input[0].value = input[0].value + character;
 
     // add to the keyboard's input
     keyboardInputElement[0].value = keyboardInputElement[0].value + character;
@@ -274,8 +287,8 @@
 
   function deleteCharacterFromInputs() {
     // delete from the "real" input
-    var realInputValue = userSelectedInputElement[0].value;
-    userSelectedInputElement[0].value = realInputValue.substring(0, realInputValue.length - 1);
+    var realInputValue = input[0].value;
+    input[0].value = realInputValue.substring(0, realInputValue.length - 1);
 
     // delete from the keyboard's input
     var keyboardInputValue = keyboardInputElement[0].value;

@@ -31,11 +31,16 @@
       letterSpan.appendChild(letter);
       backgroundSpan.appendChild(letterSpan);
       backgroundSpan.setAttribute("id", "letter-component-" + abcLetters[letterIndex]);
-      // clickableElements[i].appendChild(backgroundSpan);
 
-      components[abcLetters[letterIndex]] = addLetterToElement(clickableElements[i], backgroundSpan);
-      componentLinks[abcLetters[letterIndex]] = clickableElements[i].href;
+      // because of render issues, sometimes the letter is changing location after we put it in DOM
+      // hence the timeout - add the letter to DOM after the render occurred
+      setTimeout(setLetters.bind(null, letterIndex, backgroundSpan, clickableElements[i]), 300);
     }
+  }
+
+  function setLetters(letterIndex, backgroundSpan, clickableElement) {
+    components[abcLetters[letterIndex]] = addLetterToElement(clickableElement, backgroundSpan);
+    componentLinks[abcLetters[letterIndex]] = clickableElement.href;
   }
 
   function addLetterToElement(element, letter) {
@@ -138,7 +143,7 @@
             click(request.param);
           } else if (tag === "INPUT") {
             let type = getComponentType(request.param);
-            if(type === "submit" || type === "checkbox"){
+            if (type === "submit" || type === "checkbox") {
               click(request.param);
             }
             else {
