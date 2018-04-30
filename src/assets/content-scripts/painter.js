@@ -19,15 +19,15 @@
       const letterIndex = i - numberOfJumps * NEXT_N_LETTERS;
       const letter = document.createTextNode(" " + abcLetters[letterIndex]);
       const backgroundSpan = document.createElement("span");
-      backgroundSpan.style.backgroundColor = "red";
-      backgroundSpan.style.border = "thin dotted blue";
-      backgroundSpan.style.opacity = '0.8';
 
       const letterSpan = document.createElement("span");
       letterSpan.style.fontSize = "20px";
       letterSpan.style.opacity = '1';
       letterSpan.style.color = "green";
-
+      letterSpan.style.backgroundColor = "red";
+      letterSpan.style.border = "thin dotted blue";
+      letterSpan.style.opacity = '0.8';
+      
       letterSpan.appendChild(letter);
       backgroundSpan.appendChild(letterSpan);
       backgroundSpan.setAttribute("id", "letter-component-" + abcLetters[letterIndex]);
