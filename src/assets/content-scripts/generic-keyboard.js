@@ -186,7 +186,7 @@
     let keyboardStyle = $('#muse-keyboard-style')[0];
     keyboardStyle.parentNode.removeChild(keyboardStyle);
 
-    submitFormInGoogleSearchPage();
+    // submitFormInGoogleSearchPage();
   }
 
   function submitFormInGoogleSearchPage() {
