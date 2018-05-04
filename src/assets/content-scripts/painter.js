@@ -13,6 +13,14 @@
       "O", "P", "Q", "R", "S", "T", "U",
       "V", "W", "X", "Y", "Z"];
 
+  $(document).ready(function () {
+    let aElements = $('a:visible');
+    let textInputElements = $("input:visible");
+    let buttons = $('button');
+    clickableElements = $.merge(textInputElements, aElements);
+    paintNextClickableElement();
+  });
+
   function paintNextClickableElement() {
     const numberOfJumps = firstElementIndex / NEXT_N_LETTERS;
     for (let i = firstElementIndex; i < NEXT_N_LETTERS + firstElementIndex && i < clickableElements.length; i++) {
@@ -27,7 +35,7 @@
       letterSpan.style.backgroundColor = "red";
       letterSpan.style.border = "thin dotted blue";
       letterSpan.style.opacity = '0.8';
-      
+
       letterSpan.appendChild(letter);
       backgroundSpan.appendChild(letterSpan);
       backgroundSpan.setAttribute("id", "letter-component-" + abcLetters[letterIndex]);
@@ -95,14 +103,6 @@
       safeRemove(spanToRemove, abcLetters[i]);
     }
   }
-
-  $(document).ready(function () {
-    let aElements = $('a:visible');
-    let textInputElements = $("input:visible");
-    let buttons = $('button');
-    clickableElements = $.merge(textInputElements, aElements);
-    paintNextClickableElement();
-  });
 
   function gapLetters() {
     firstElementIndex = firstElementIndex + NEXT_N_LETTERS >= clickableElements.length ? 0 : firstElementIndex + NEXT_N_LETTERS;
