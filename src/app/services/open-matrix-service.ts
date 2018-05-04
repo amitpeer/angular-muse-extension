@@ -65,6 +65,7 @@ export class OpenMatrixService {
       return STATE.GOOGLE_KEYBOARD;
     } else if (clickedIcon === ACTION.GAP_LETTERS) {
       backgroundScript.gapLetters();
+      return 'none'
     } else if (clickedIcon === ACTION.SEARCH) {
       backgroundScript.submitForm();
     }
