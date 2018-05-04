@@ -132,23 +132,23 @@ export class OpenMatrixService {
     var src = "";
 
     if (str === ACTION.CLOSE_MATRIX) {
-      src = "assets/close_matrix_icon.png";
+      src = "assets/icons/close_matrix_icon.png";
     } else if (str === ACTION.BACK) {
-      src = "assets/back_icon.png";
+      src = "assets/icons/back_icon.png";
     } else if (str === ACTION.FORWARD) {
-      src = "assets/forward_icon.png";
+      src = "assets/icons/forward_icon.png";
     } else if (str === ACTION.REFRESH) {
-      src = "assets/refresh_icon.png";
+      src = "assets/icons/refresh_icon.png";
     } else if (str === ACTION.HOME_PAGE) {
-      src = "assets/homepage_icon.png";
+      src = "assets/icons/homepage_icon.png";
     } else if (str === ACTION.NO_ACTION) {
-      src = "assets/no_action_icon.png";
+      src = "assets/icons/no_action_icon.png";
     } else if (str == ACTION.SEARCH) {
-      src = "assets/search_icon.png";
+      src = "assets/icons/search_icon.png";
     } else if (str == ACTION.GAP_LETTERS) {
-      src = "assets/keyboard_icon.png";
+      src = "assets/icons/gap_icon.png";
     } else if (str == ACTION.KEYBOARD) {
-      src = "assets/keyboard_icon.png";
+      src = "assets/icons/keyboard_icon.png";
     }
 
     return src;
