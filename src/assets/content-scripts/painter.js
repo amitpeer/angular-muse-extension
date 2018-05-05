@@ -15,9 +15,10 @@
 
   $(document).ready(function () {
     let aElements = $('a:visible');
-    let textInputElements = $("input:visible");
-    let buttons = $('button');
-    clickableElements = $.merge(textInputElements, aElements);
+    let textInputElements = $('input:visible');
+    let buttons = $('button:visible');
+    let inputsAndLinks = $.merge(textInputElements, aElements);
+    clickableElements = $.merge(buttons, inputsAndLinks);
     paintNextClickableElement();
   });
 
