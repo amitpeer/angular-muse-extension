@@ -11,11 +11,11 @@
   const KEYBOARD_INPUT_SELECTOR = '#muse-write';
 
   async function openKeyboard(id) {
-    input = $('#' + id + '> input');
     keyboardIndex = 0;
+    input = $('#' + id + '> input');
 
-    if (input[0].type === 'text') {
-      input[0].click();
+    if (!input[0]) {
+      input = $('#' + id + '> textarea');
     }
 
     // perform GET call to get the keyboard's html as data

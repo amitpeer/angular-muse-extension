@@ -22,9 +22,12 @@
   function retrieveClickableElements() {
     let aElements = $('a:visible');
     let textInputElements = $('input:visible');
+    let textareas = $('textarea:visible');
     let buttons = $('button:visible');
+
     let inputsAndLinks = $.merge(textInputElements, aElements);
-    clickableElements = $.merge(buttons, inputsAndLinks);
+    let withTextAreas = $.merge(inputsAndLinks, textareas);
+    clickableElements = $.merge(withTextAreas, buttons);
 
     clickableElements = filterElements(clickableElements);
 
@@ -71,10 +74,12 @@
       const letterSpan = document.createElement("span");
       letterSpan.style.fontSize = "20px";
       letterSpan.style.opacity = '1';
-      letterSpan.style.color = "green";
-      letterSpan.style.backgroundColor = "red";
-      letterSpan.style.border = "thin dotted blue";
-      letterSpan.style.opacity = '0.8';
+      letterSpan.style.color = "white";
+      letterSpan.style.backgroundColor = "blue";
+      letterSpan.style.opacity = '0.9';
+      letterSpan.style.fontWeight = 'bold';
+      letterSpan.style.alignItems = 'center';
+      letterSpan.style.border = '1px solid aqua';
 
       letterSpan.appendChild(letter);
       backgroundSpan.appendChild(letterSpan);
@@ -91,7 +96,7 @@
 
   function addLetterToElement(element, letter) {
     let father;
-    if (element.tagName === 'INPUT') {
+    if (isFreeTextElement(element.tagName)) {
       let parent = element.parentNode;
       if (parent) {
         letter.setAttribute("class", CLASS_FATHER);
@@ -101,6 +106,7 @@
       }
     } else {
       letter.setAttribute("class", CLASS_CHILD);
+      letter.style.display = 'inline-flex';
       element.appendChild(letter);
       father = element;
     }
@@ -164,9 +170,12 @@
     let coloredWithNewColor = safeGetLetterElement(nextLetter);
     let coloredWithDefaultColor = safeGetLetterElement(lastLetter);
 
-    coloredWithDefaultColor.childNodes[0].style.backgroundColor = 'red';
-    coloredWithNewColor.childNodes[0].style.backgroundColor = 'yellow';
+    coloredWithDefaultColor.childNodes[0].style.backgroundColor = 'blue';
+    coloredWithNewColor.childNodes[0].style.backgroundColor = 'darkorange';
+  }
 
+  function isFreeTextElement(tag) {
+    return tag === "INPUT" || tag === 'TEXTAREA'
   }
 
   chrome.runtime.onMessage.addListener(
@@ -177,7 +186,7 @@
           let tag = getComponentTag(request.param);
           if (tag === "A" || tag === "BUTTON") {
             click(request.param);
-          } else if (tag === "INPUT") {
+          } else if (isFreeTextElement(tag)) {
             let type = getComponentType(request.param);
             if (type === "submit" || type === "checkbox") {
               click(request.param);
