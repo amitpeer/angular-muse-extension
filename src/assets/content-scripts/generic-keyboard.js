@@ -78,17 +78,13 @@
   }
 
   function jumpRight() {
-    if (keyboardIndex === keyboardElements.length - 1) {
-      keyboardIndex = 0;
-    } else {
-      keyboardIndex++;
+    if (keyboardIndex < keyboardElements.length - 1) {
+      keyboardIndex++
     }
   }
 
   function jumpLeft() {
-    if (keyboardIndex === 0) {
-      keyboardIndex = keyboardElements.length - 1;
-    } else {
+    if (keyboardIndex > 0) {
       keyboardIndex--;
     }
   }
