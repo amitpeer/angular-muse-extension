@@ -13,15 +13,6 @@
       "O", "P", "Q", "R", "S", "T", "U",
       "V", "W", "X", "Y", "Z"];
 
-  $(document).ready(function () {
-    let aElements = $('a:visible');
-    let textInputElements = $('input:visible');
-    let buttons = $('button:visible');
-    let inputsAndLinks = $.merge(textInputElements, aElements);
-    clickableElements = $.merge(buttons, inputsAndLinks);
-    paintNextClickableElement();
-  });
-
   function paintNextClickableElement() {
     const numberOfJumps = firstElementIndex / NEXT_N_LETTERS;
     for (let i = firstElementIndex; i < NEXT_N_LETTERS + firstElementIndex && i < clickableElements.length; i++) {
@@ -41,9 +32,7 @@
       backgroundSpan.appendChild(letterSpan);
       backgroundSpan.setAttribute("id", "letter-component-" + abcLetters[letterIndex]);
 
-      // because of render issues, sometimes the letter is changing location after we put it in DOM
-      // hence the timeout - add the letter to DOM after the render occurred
-      setTimeout(setLetters.bind(null, letterIndex, backgroundSpan, clickableElements[i]), 300);
+      setLetters(letterIndex, backgroundSpan, clickableElements[i]);
     }
   }
 
@@ -98,12 +87,50 @@
 
   function clearLastClickableElements() {
     let numberOfLettersToRemove = firstElementIndex + NEXT_N_LETTERS <= clickableElements.length ? NEXT_N_LETTERS
-      : clickableElements.length - firstElementIndex - 1;
+      : clickableElements.length - firstElementIndex;
     for (let i = 0; i < numberOfLettersToRemove; i++) {
       const spanToRemove = safeGetLetterElement(abcLetters[i]);
       safeRemove(spanToRemove, abcLetters[i]);
     }
   }
+
+  function isVisible(ele) {
+    return ele.clientWidth !== 0 &&
+      ele.clientHeight !== 0 &&
+      ele.style.opacity !== 0 &&
+      ele.style.visibility !== 'hidden';
+  }
+
+  function isGoogleHiddenInput(element) {
+    if (element.className === "gsfi" && element.hasAttribute("title") &&
+      element.getAttribute("title") !== "חפש") {
+      return true;
+    }
+    return false
+  }
+
+  function visibleInputElements(inputs) {
+    visibleInpust = [];
+    for (let i = 0; i < inputs.length; i++) {
+      if (!isGoogleHiddenInput(inputs[i])) {
+        visibleInpust.push(inputs[i])
+      }
+    }
+
+    return visibleInpust
+  }
+
+  $(document).ready(function () {
+    let aElements = $('a:visible');
+    let textInputElements = $('input:visible');
+    let buttons = $('button:visible');
+    let inputsAndLinks = $.merge(textInputElements, aElements);
+    clickableElements = $.merge(buttons, inputsAndLinks);
+
+    // because of render issues, sometimes the letter is changing location after we put it in DOM
+    // hence the timeout - add the letter to DOM after the render occurred
+    setTimeout(paintNextClickableElement.bind(null), 300);
+  });
 
   function gapLetters() {
     firstElementIndex = firstElementIndex + NEXT_N_LETTERS >= clickableElements.length ? 0 : firstElementIndex + NEXT_N_LETTERS;
