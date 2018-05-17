@@ -94,43 +94,52 @@
     }
   }
 
-  function isVisible(ele) {
-    return ele.clientWidth !== 0 &&
-      ele.clientHeight !== 0 &&
-      ele.style.opacity !== 0 &&
-      ele.style.visibility !== 'hidden';
+  function isExcludedGoogleElement(element) {
+    return element.getAttribute('aria-label') === 'כלי הזנה' || element.id === 'logo' || element.className.includes('ab_button')
+  }
+
+  function isVisible(element) {
+    return element.style.opacity !== '0' && element.style.visibility !== 'hidden';
   }
 
   function isGoogleHiddenInput(element) {
-    if (element.className === "gsfi" && element.hasAttribute("title") &&
-      element.getAttribute("title") !== "חפש") {
+    if (!isVisible(element) || element.getAttribute('aria-hidden')) {
       return true;
     }
     return false
   }
 
-  function visibleInputElements(inputs) {
-    visibleInpust = [];
+  function filterElements(inputs) {
+    let visibleInputs = [];
+
     for (let i = 0; i < inputs.length; i++) {
-      if (!isGoogleHiddenInput(inputs[i])) {
-        visibleInpust.push(inputs[i])
+      if (!isGoogleHiddenInput(inputs[i]) && !isExcludedGoogleElement(inputs[i])) {
+        visibleInputs.push(inputs[i])
       }
     }
 
-    return visibleInpust
+    return visibleInputs
   }
 
-  $(document).ready(function () {
+  window.onload = retrieveClickableElements;
+
+  // $(document).ready(function () {
+  //   retrieveClickableElements();
+  // });
+
+  function retrieveClickableElements() {
     let aElements = $('a:visible');
     let textInputElements = $('input:visible');
     let buttons = $('button:visible');
     let inputsAndLinks = $.merge(textInputElements, aElements);
     clickableElements = $.merge(buttons, inputsAndLinks);
 
+    clickableElements = filterElements(clickableElements);
+
     // because of render issues, sometimes the letter is changing location after we put it in DOM
     // hence the timeout - add the letter to DOM after the render occurred
-    setTimeout(paintNextClickableElement.bind(null), 300);
-  });
+    setTimeout(paintNextClickableElement, 300);
+  }
 
   function gapLetters() {
     firstElementIndex = firstElementIndex + NEXT_N_LETTERS >= clickableElements.length ? 0 : firstElementIndex + NEXT_N_LETTERS;
