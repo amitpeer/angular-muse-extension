@@ -38,6 +38,10 @@
       setTimeout(clearSelectedInput, 500);
     });
 
+    // add search image in the proper place on keyboard
+    var img = await chrome.extension.getURL("assets/icons/search_icon.png");
+    $('#muse-search')[0].src = img;
+
     // catch all keyboard elements
     keyboardElements = $(KEYBOARD_ELEMENTS_SELECTOR);
 
@@ -165,15 +169,10 @@
   }
 
   function clickOnKeyboardLetter(sendResponse) {
-    if (keyboardIndex === specialKeys['ESC']) {
-      removeKeyboard();
-      sendResponse({close: true});
-    } else {
-      onKeyboardClickEvent();
-    }
+    onKeyboardClickEvent(sendResponse);
   }
 
-  function removeKeyboard() {
+  function removeKeyboard(sendResponse, responseType) {
     // remove keyboard from DOM
     let keyboard = $('#muse-keyboard-container')[0];
     keyboard.parentNode.removeChild(keyboard);
@@ -182,14 +181,10 @@
     let keyboardStyle = $('#muse-keyboard-style')[0];
     keyboardStyle.parentNode.removeChild(keyboardStyle);
 
-    // submitFormInGoogleSearchPage();
-  }
-
-  function submitFormInGoogleSearchPage() {
-    let searchForm = $('form[role=search]');
-    if (searchForm && window.location.href.includes("google")) {
-      searchForm.submit();
-    }
+    if (responseType === 'close')
+      sendResponse({close: true});
+    else if (responseType === 'search')
+      sendResponse({search: true})
   }
 
   function createSpecialKeysDictionary() {
@@ -225,9 +220,27 @@
       }
     });
 
-  function onKeyboardClickEvent() {
+  // KEYBOARD FUNCTIONALITY:
+
+  function onKeyboardClickEvent(sendResponse) {
     var $this = $(keyboardElements[keyboardIndex]),
       character = $this.html(); // If it's a lowercase letter, nothing happens to this variable
+
+    // Search
+    if ($this.hasClass('search')) {
+      let form = $('form');
+      if (form) {
+        form[0].submit();
+      }
+      removeKeyboard(sendResponse, 'search');
+      return;
+    }
+
+    // Close
+    if ($this.hasClass('escape')) {
+      removeKeyboard(sendResponse, 'close');
+      return;
+    }
 
     // Shift keys
     if ($this.hasClass('left-shift') || $this.hasClass('right-shift')) {

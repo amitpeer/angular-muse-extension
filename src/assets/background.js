@@ -64,7 +64,7 @@ function callContentScript(action) {
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, {type: action}, function (response) {
       console.log('background::after' + action);
-      closeGoogleKeyboardIfNeeded(response);
+      closeKeyboardIfNeeded(response);
     });
   });
 }
@@ -74,12 +74,12 @@ function callContentScriptWithParam(action, additionalParam) {
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, {type: action, param: additionalParam}, function (response) {
       console.log('background::after' + action);
-      openGenericKeyboardIfNeeded(response)
+      openKeyboardIfNeeded(response)
     });
   });
 }
 
-function openGenericKeyboardIfNeeded(response) {
+function openKeyboardIfNeeded(response) {
   if (response && response.input) {
     console.log("open keyboard please");
     changeState('generic_keyboard');
@@ -87,7 +87,7 @@ function openGenericKeyboardIfNeeded(response) {
   }
 }
 
-function closeGoogleKeyboardIfNeeded(response) {
+function closeKeyboardIfNeeded(response) {
   if (response) {
     if (response.close) {
       changeState();

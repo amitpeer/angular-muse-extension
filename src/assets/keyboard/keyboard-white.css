@@ -98,3 +98,8 @@
   border-color: #e5e5e5;
   cursor: pointer;
 }
+
+#muse-search {
+  width: inherit;
+  height: inherit;
+}
