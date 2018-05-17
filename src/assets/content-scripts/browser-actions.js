@@ -37,7 +37,7 @@
           console.log("content::submitForm");
           let form = $('form');
           if (form) {
-            form.submit();
+            form[0].submit();
           }
           break;
       }

@@ -33,8 +33,9 @@
     setTimeout(paintNextClickableElement, 300);
   }
 
-  function isExcludedGoogleElement(element) {
-    return element.getAttribute('aria-label') === 'כלי הזנה' || element.id === 'logo' || element.className.includes('ab_button')
+  function isExcludedElement(element) {
+    return element.getAttribute('aria-label') === 'כלי הזנה' || element.id === 'logo'
+      || element.className.includes('ab_button') || element.type === 'submit'
   }
 
   function isVisible(element) {
@@ -52,7 +53,7 @@
     let visibleInputs = [];
 
     for (let i = 0; i < inputs.length; i++) {
-      if (!isGoogleHiddenInput(inputs[i]) && !isExcludedGoogleElement(inputs[i])) {
+      if (!isGoogleHiddenInput(inputs[i]) && !isExcludedElement(inputs[i])) {
         visibleInputs.push(inputs[i])
       }
     }
@@ -92,10 +93,12 @@
     let father;
     if (element.tagName === 'INPUT') {
       let parent = element.parentNode;
-      letter.setAttribute("class", CLASS_FATHER);
-      parent.replaceChild(letter, element);
-      letter.appendChild(element);
-      father = letter;
+      if (parent) {
+        letter.setAttribute("class", CLASS_FATHER);
+        parent.replaceChild(letter, element);
+        letter.appendChild(element);
+        father = letter;
+      }
     } else {
       letter.setAttribute("class", CLASS_CHILD);
       element.appendChild(letter);
