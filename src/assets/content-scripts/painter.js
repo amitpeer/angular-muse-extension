@@ -13,6 +13,53 @@
       "O", "P", "Q", "R", "S", "T", "U",
       "V", "W", "X", "Y", "Z"];
 
+  // $(document).ready(function () {
+  //   retrieveClickableElements();
+  // });
+
+  window.onload = retrieveClickableElements;
+
+  function retrieveClickableElements() {
+    let aElements = $('a:visible');
+    let textInputElements = $('input:visible');
+    let buttons = $('button:visible');
+    let inputsAndLinks = $.merge(textInputElements, aElements);
+    clickableElements = $.merge(buttons, inputsAndLinks);
+
+    clickableElements = filterElements(clickableElements);
+
+    // because of render issues, sometimes the letter is changing location after we put it in DOM
+    // hence the timeout - add the letter to DOM after the render occurred
+    setTimeout(paintNextClickableElement, 300);
+  }
+
+  function isExcludedGoogleElement(element) {
+    return element.getAttribute('aria-label') === 'כלי הזנה' || element.id === 'logo' || element.className.includes('ab_button')
+  }
+
+  function isVisible(element) {
+    return element.style.opacity !== '0' && element.style.visibility !== 'hidden';
+  }
+
+  function isGoogleHiddenInput(element) {
+    if (!isVisible(element) || element.getAttribute('aria-hidden')) {
+      return true;
+    }
+    return false
+  }
+
+  function filterElements(inputs) {
+    let visibleInputs = [];
+
+    for (let i = 0; i < inputs.length; i++) {
+      if (!isGoogleHiddenInput(inputs[i]) && !isExcludedGoogleElement(inputs[i])) {
+        visibleInputs.push(inputs[i])
+      }
+    }
+
+    return visibleInputs
+  }
+
   function paintNextClickableElement() {
     const numberOfJumps = firstElementIndex / NEXT_N_LETTERS;
     for (let i = firstElementIndex; i < NEXT_N_LETTERS + firstElementIndex && i < clickableElements.length; i++) {
@@ -61,10 +108,6 @@
     return component.className === CLASS_FATHER
   }
 
-  function isChildComponent(component) {
-    return component.className === CLASS_CHILD
-  }
-
   function safeGetLetterElement(letter) {
     return isFatherComponent(components[letter]) ? components[letter]
       : components[letter].getElementsByClassName(CLASS_CHILD)[0];
@@ -92,53 +135,6 @@
       const spanToRemove = safeGetLetterElement(abcLetters[i]);
       safeRemove(spanToRemove, abcLetters[i]);
     }
-  }
-
-  function isExcludedGoogleElement(element) {
-    return element.getAttribute('aria-label') === 'כלי הזנה' || element.id === 'logo' || element.className.includes('ab_button')
-  }
-
-  function isVisible(element) {
-    return element.style.opacity !== '0' && element.style.visibility !== 'hidden';
-  }
-
-  function isGoogleHiddenInput(element) {
-    if (!isVisible(element) || element.getAttribute('aria-hidden')) {
-      return true;
-    }
-    return false
-  }
-
-  function filterElements(inputs) {
-    let visibleInputs = [];
-
-    for (let i = 0; i < inputs.length; i++) {
-      if (!isGoogleHiddenInput(inputs[i]) && !isExcludedGoogleElement(inputs[i])) {
-        visibleInputs.push(inputs[i])
-      }
-    }
-
-    return visibleInputs
-  }
-
-  window.onload = retrieveClickableElements;
-
-  // $(document).ready(function () {
-  //   retrieveClickableElements();
-  // });
-
-  function retrieveClickableElements() {
-    let aElements = $('a:visible');
-    let textInputElements = $('input:visible');
-    let buttons = $('button:visible');
-    let inputsAndLinks = $.merge(textInputElements, aElements);
-    clickableElements = $.merge(buttons, inputsAndLinks);
-
-    clickableElements = filterElements(clickableElements);
-
-    // because of render issues, sometimes the letter is changing location after we put it in DOM
-    // hence the timeout - add the letter to DOM after the render occurred
-    setTimeout(paintNextClickableElement, 300);
   }
 
   function gapLetters() {
