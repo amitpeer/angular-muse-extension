@@ -35,7 +35,7 @@
 
   function isExcludedElement(element) {
     return element.getAttribute('aria-label') === 'כלי הזנה' || element.id === 'logo'
-      || element.className.includes('ab_button') || element.type === 'submit'
+      || element.className.includes('ab_button')
   }
 
   function isVisible(element) {
