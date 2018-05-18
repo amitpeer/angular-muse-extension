@@ -3,23 +3,22 @@ import "assets/background.js";
 import {STATE} from "../states";
 
 export enum ACTION {
-  CLOSE_MATRIX = 'CM',
-  REFRESH = 'RE',
-  FORWARD = 'FO',
-  BACK = 'BA',
-  HOME_PAGE = 'HO',
-  NO_ACTION = 'NO',
-  KEYBOARD = 'KE',
-  GAP_LETTERS = 'GL',
-  SEARCH = 'SE'
+  CLOSE_MATRIX,
+  REFRESH,
+  FORWARD,
+  BACK,
+  HOME_PAGE,
+  NO_ACTION,
+  KEYBOARD,
+  GAP_LETTERS,
+  SEARCH,
+  URL
 }
 
 declare var backgroundScript:any;
 
 @Injectable()
 export class OpenMatrixService {
-  private clickTime = Date.now();
-  private TIME_BETWEEN_CLICKS = 2000;
   private selectorIndex = {row: 0, col: 0};
   private letters =
     [[ACTION.NO_ACTION, ACTION.BACK, ACTION.FORWARD, ACTION.CLOSE_MATRIX],
@@ -30,7 +29,7 @@ export class OpenMatrixService {
       ['M', 'N', 'O', 'P'],
       ['Q', 'R', 'S', 'T'],
       ['U', 'V', 'W', 'X'],
-      ['Y', 'Z', '?', '?']];
+      ['Y', 'Z', ACTION.URL]];
 
   private dataReceivedThreshold = 8;
   private app;
@@ -68,6 +67,8 @@ export class OpenMatrixService {
       return 'none'
     } else if (clickedIcon === ACTION.SEARCH) {
       backgroundScript.submitForm();
+    } else if (clickedIcon === ACTION.URL) {
+      backgroundScript.url();
     }
   }
 
@@ -149,6 +150,8 @@ export class OpenMatrixService {
       src = "assets/icons/gap_icon.png";
     } else if (str == ACTION.KEYBOARD) {
       src = "assets/icons/keyboard_icon.png";
+    } else if (str === ACTION.URL) {
+      src = "assets/icons/url_icon2.png";
     }
 
     return src;
