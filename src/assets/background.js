@@ -45,6 +45,9 @@ var backgroundScript = (function () {
     submitForm: function () {
       callContentScript('submitForm');
     },
+    url: function () {
+      callContentScriptWithParam("openGenericKeyboard", 'muse-nav-to-url')
+    },
     minimize: function () {
       document.body.style.visibility = "hidden";
       document.body.style.width = 0;

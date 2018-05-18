@@ -69,6 +69,7 @@ export class OpenMatrixService {
       backgroundScript.submitForm();
     } else if (clickedIcon === ACTION.URL) {
       backgroundScript.url();
+      return STATE.GENERIC_KEYBOARD
     }
   }
 

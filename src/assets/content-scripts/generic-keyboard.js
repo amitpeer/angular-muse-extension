@@ -5,6 +5,7 @@
   let keyboardInputElement;
   let shift = false;
   let capslock = false;
+  let isUrlNavigation = false;
 
   const specialKeys = {};
   const KEYBOARD_ELEMENTS_SELECTOR = 'li[name=muse-keyboard-element]';
@@ -12,10 +13,17 @@
 
   async function openKeyboard(id) {
     keyboardIndex = 0;
-    input = $('#' + id + '> input');
 
-    if (!input[0]) {
-      input = $('#' + id + '> textarea');
+    if (id === 'muse-nav-to-url') {
+      // navigation to specific URL - no input required
+      isUrlNavigation = true;
+    } else {
+      // opening keyboard to type into an input
+      isUrlNavigation = false;
+      input = $('#' + id + '> input');
+      if (!input[0]) {
+        input = $('#' + id + '> textarea');
+      }
     }
 
     // perform GET call to get the keyboard's html as data
@@ -39,17 +47,19 @@
     });
 
     // add search image in the proper place on keyboard
-    var img = await chrome.extension.getURL("assets/icons/search_icon.png");
-    $('#muse-search')[0].src = img;
+    $('#muse-search')[0].src = await chrome.extension.getURL("assets/icons/search_icon.png");
 
     // catch all keyboard elements
     keyboardElements = $(KEYBOARD_ELEMENTS_SELECTOR);
 
     // catch keyboard's unique input element
     keyboardInputElement = $(KEYBOARD_INPUT_SELECTOR);
-
-    // clear keyboard's input
-    keyboardInputElement[0].value = '';
+    if (isUrlNavigation) {
+      keyboardInputElement[0].value = 'https://www.';
+    } else {
+      // clear keyboard's input
+      keyboardInputElement[0].value = '';
+    }
 
     clearSelectedInput();
     createSpecialKeysDictionary();
@@ -57,7 +67,9 @@
   }
 
   function clearSelectedInput() {
-    input[0].value = '';
+    if (!isUrlNavigation) {
+      input[0].value = '';
+    }
   }
 
   function moveOnKeyboardTo(direction) {
@@ -228,9 +240,14 @@
 
     // Search
     if ($this.hasClass('search')) {
-      let form = $('form');
-      if (form) {
-        form[0].submit();
+      if (isUrlNavigation) {
+        let url = keyboardInputElement[0].value;
+        window.location.href = url.startsWith('http') ? url : 'http://' + url;
+      } else {
+        let form = $('form');
+        if (form) {
+          form[0].submit();
+        }
       }
       removeKeyboard(sendResponse, 'search');
       return;
@@ -288,7 +305,9 @@
 
   function addCharacterToInputs(character) {
     // add to the "real" input"
-    input[0].value = input[0].value + character;
+    if (!isUrlNavigation) {
+      input[0].value = input[0].value + character;
+    }
 
     // add to the keyboard's input
     keyboardInputElement[0].value = keyboardInputElement[0].value + character;
@@ -296,8 +315,10 @@
 
   function deleteCharacterFromInputs() {
     // delete from the "real" input
-    var realInputValue = input[0].value;
-    input[0].value = realInputValue.substring(0, realInputValue.length - 1);
+    if (!isUrlNavigation) {
+      var realInputValue = input[0].value;
+      input[0].value = realInputValue.substring(0, realInputValue.length - 1);
+    }
 
     // delete from the keyboard's input
     var keyboardInputValue = keyboardInputElement[0].value;

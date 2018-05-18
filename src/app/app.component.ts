@@ -152,8 +152,8 @@ export class AppComponent {
 
   private click() {
     const response = this.matrixState.click();
-    if (response === STATE.GOOGLE_KEYBOARD) {
-      this.stateChanged(STATE.GOOGLE_KEYBOARD)
+    if (response === STATE.GENERIC_KEYBOARD) {
+      this.stateChanged(STATE.GENERIC_KEYBOARD)
     } else if (response !== 'none') {
       this.stateChanged();
     }
@@ -165,7 +165,6 @@ export class AppComponent {
     if (changeTo === STATE.GOOGLE_KEYBOARD) {
       this.matrixState = this.googleKeyboardService;
       backgroundScript.minimize();
-
     } else if (changeTo === STATE.GENERIC_KEYBOARD) {
       this.matrixState = this.genericKeyboardService;
       backgroundScript.minimize();
