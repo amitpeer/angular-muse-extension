@@ -45,7 +45,7 @@ var backgroundScript = (function () {
     },
     maximize: function () {
       document.body.style.visibility = "visible";
-      document.body.style.width = "95px";
+      document.body.style.width = "80px";
       document.body.style.height = "20%";
     }
   }
