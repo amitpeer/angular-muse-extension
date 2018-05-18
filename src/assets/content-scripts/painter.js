@@ -117,9 +117,18 @@
     return component.className === CLASS_FATHER
   }
 
+  function getCorrectLetterChildByLetter(letter) {
+    let children = components[letter].getElementsByClassName(CLASS_CHILD);
+    for (let i = 0; i < children.length; i++) {
+      if (children[i].id.endsWith(letter)) {
+        return children[i];
+      }
+    }
+  }
+
   function safeGetLetterElement(letter) {
     return isFatherComponent(components[letter]) ? components[letter]
-      : components[letter].getElementsByClassName(CLASS_CHILD)[0];
+      : getCorrectLetterChildByLetter(letter);
   }
 
   function safeGetConcreteElement(letter) {
@@ -141,7 +150,8 @@
     let numberOfLettersToRemove = firstElementIndex + NEXT_N_LETTERS <= clickableElements.length ? NEXT_N_LETTERS
       : clickableElements.length - firstElementIndex;
     for (let i = 0; i < numberOfLettersToRemove; i++) {
-      if (components[abcLetters[i]]) {
+      let comp = components[abcLetters[i]];
+      if (comp) {
         const spanToRemove = safeGetLetterElement(abcLetters[i]);
         safeRemove(spanToRemove, abcLetters[i]);
       }
