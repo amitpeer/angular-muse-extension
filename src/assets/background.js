@@ -23,17 +23,7 @@ var backgroundScript = (function () {
     },
     home: function () {
       callContentScript('home');
-    },
-    openGoogleKeyboard: function () {
-      callContentScript('openGoogleKeyboard');
-    },
-    clickGoogleKeyboardLetter: function () {
-      callContentScript('clickGoogleKeyboardLetter');
-    },
-    moveOnGoogleKeyboard: function (direction) {
-      callContentScriptWithParam('moveOnGoogleKeyboard', direction);
-    },
-    clickGenericKeyboardLetter: function () {
+    }, clickGenericKeyboardLetter: function () {
       callContentScript('clickGenericKeyboardLetter');
     },
     moveOnGenericKeyboard: function (direction) {

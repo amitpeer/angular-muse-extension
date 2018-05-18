@@ -9,7 +9,6 @@ export enum ACTION {
   BACK,
   HOME_PAGE,
   NO_ACTION,
-  KEYBOARD,
   GAP_LETTERS,
   SEARCH,
   URL
@@ -59,9 +58,6 @@ export class OpenMatrixService {
       backgroundScript.forward();
     } else if (clickedIcon === ACTION.HOME_PAGE) {
       backgroundScript.home();
-    } else if (clickedIcon === ACTION.KEYBOARD) {
-      backgroundScript.openGoogleKeyboard();
-      return STATE.GOOGLE_KEYBOARD;
     } else if (clickedIcon === ACTION.GAP_LETTERS) {
       backgroundScript.gapLetters();
       return 'none'
@@ -149,8 +145,6 @@ export class OpenMatrixService {
       src = "assets/icons/search_icon.png";
     } else if (str == ACTION.GAP_LETTERS) {
       src = "assets/icons/gap_icon.png";
-    } else if (str == ACTION.KEYBOARD) {
-      src = "assets/icons/keyboard_icon.png";
     } else if (str === ACTION.URL) {
       src = "assets/icons/url_icon2.png";
     }

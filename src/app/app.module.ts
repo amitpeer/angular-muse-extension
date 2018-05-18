@@ -3,7 +3,6 @@ import {NgModule} from "@angular/core";
 import {AppComponent} from "./app.component";
 import {OpenMatrixService} from "./services/open-matrix-service";
 import {CloseMatrixService} from "./services/close-matrix-service";
-import {GoogleKeyboardService} from "./services/google-keyboard-service";
 import {GenericKeyboardService} from "./services/generic-keyboard-service";
 
 
@@ -14,7 +13,7 @@ import {GenericKeyboardService} from "./services/generic-keyboard-service";
   imports: [
     BrowserModule
   ],
-  providers: [OpenMatrixService, CloseMatrixService, GoogleKeyboardService, GenericKeyboardService],
+  providers: [OpenMatrixService, CloseMatrixService, GenericKeyboardService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

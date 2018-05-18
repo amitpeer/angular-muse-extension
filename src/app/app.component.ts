@@ -14,7 +14,6 @@ import {map, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs/Subject";
 import {OpenMatrixService} from "./services/open-matrix-service";
 import {CloseMatrixService} from "./services/close-matrix-service";
-import {GoogleKeyboardService} from "./services/google-keyboard-service";
 import {GenericKeyboardService} from "./services/generic-keyboard-service";
 import {STATE} from "./states";
 
@@ -39,7 +38,6 @@ export class AppComponent {
   blinkTime = Date.now();
   headMoveTimer = Date.now();
   connected = false;
-  leftBlinks:Observable<number>;
   rightBlinks:Observable<number>;
   accelerometer:Observable<XYZ>;
   destroy = new Subject<void>();
@@ -59,8 +57,7 @@ export class AppComponent {
   private START_DELAY = 2 * 1000;
 
   constructor(private openMatrixService:OpenMatrixService, private closeMatrixService:CloseMatrixService,
-              private googleKeyboardService:GoogleKeyboardService, private genericKeyboardService:GenericKeyboardService,
-              private zone:NgZone) {
+              private genericKeyboardService:GenericKeyboardService, private zone:NgZone) {
     this.muse.connectionStatus.subscribe(newStatus => {
       this.connected = newStatus;
       this.matrixState = openMatrixService;
@@ -162,10 +159,7 @@ export class AppComponent {
   private stateChanged(changeTo?) {
     var currentState = this.matrixState.getState();
 
-    if (changeTo === STATE.GOOGLE_KEYBOARD) {
-      this.matrixState = this.googleKeyboardService;
-      backgroundScript.minimize();
-    } else if (changeTo === STATE.GENERIC_KEYBOARD) {
+    if (changeTo === STATE.GENERIC_KEYBOARD) {
       this.matrixState = this.genericKeyboardService;
       backgroundScript.minimize();
 
@@ -173,8 +167,7 @@ export class AppComponent {
       this.matrixState = this.closeMatrixService;
       backgroundScript.minimize();
 
-    } else if (changeTo === STATE.OPEN || currentState === STATE.CLOSE
-      || currentState === STATE.GOOGLE_KEYBOARD || currentState === STATE.GENERIC_KEYBOARD) {
+    } else if (changeTo === STATE.OPEN || currentState === STATE.CLOSE || currentState === STATE.GENERIC_KEYBOARD) {
       this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
     }
