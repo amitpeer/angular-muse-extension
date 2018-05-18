@@ -141,8 +141,10 @@
     let numberOfLettersToRemove = firstElementIndex + NEXT_N_LETTERS <= clickableElements.length ? NEXT_N_LETTERS
       : clickableElements.length - firstElementIndex;
     for (let i = 0; i < numberOfLettersToRemove; i++) {
-      const spanToRemove = safeGetLetterElement(abcLetters[i]);
-      safeRemove(spanToRemove, abcLetters[i]);
+      if (components[abcLetters[i]]) {
+        const spanToRemove = safeGetLetterElement(abcLetters[i]);
+        safeRemove(spanToRemove, abcLetters[i]);
+      }
     }
   }
 
