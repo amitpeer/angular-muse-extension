@@ -1,7 +1,8 @@
 #mainWindow {
-  width: 85px;
+  width: 95px;
   height: fit-content;
   background-color: lightgray;
+  margin: auto;
 }
 
 .matrix-letters {
