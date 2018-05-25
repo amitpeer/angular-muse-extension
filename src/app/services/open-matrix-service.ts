@@ -77,10 +77,10 @@ export class OpenMatrixService {
     return this.letters;
   }
 
-  public backgroundColorChange(exitLetterRowIndex) {
-    const exitLetter = this.letters[exitLetterRowIndex.row][exitLetterRowIndex.col];
-    if (this.isLetter(exitLetter)) {
-      const enterLetter = this.letters[this.selectorIndex.row][this.selectorIndex.col];
+  public backgroundColorChange(exitLetterIndex) {
+    const exitLetter = this.letters[exitLetterIndex.row][exitLetterIndex.col];
+    const enterLetter = this.letters[this.selectorIndex.row][this.selectorIndex.col];
+    if (this.isLetter(enterLetter) || this.isLetter(exitLetter)) {
       backgroundScript.matrixLetterChange(exitLetter, enterLetter);
     }
   }
