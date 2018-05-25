@@ -175,15 +175,25 @@
 
   function click(letter) {
     // window.location.href = componentLinks[letter];
-    safeGetConcreteElement(letter).click()
+    safeGetConcreteElement(letter).click();
+    clearLastClickableElements();
+    retrieveClickableElements();
+
+  }
+
+  function isLetter(str) {
+    return str.length === 1 && str.match(/[a-z]/i);
   }
 
   function paintLetterElementAccordingToMatrix(nextLetter, lastLetter) {
-    let coloredWithNewColor = safeGetLetterElement(nextLetter);
-    let coloredWithDefaultColor = safeGetLetterElement(lastLetter);
-
-    coloredWithDefaultColor.childNodes[0].style.backgroundColor = 'blue';
-    coloredWithNewColor.childNodes[0].style.backgroundColor = 'darkorange';
+    if (isLetter(nextLetter)) {
+      let coloredWithNewColor = safeGetLetterElement(nextLetter);
+      coloredWithNewColor.childNodes[0].style.backgroundColor = 'darkorange';
+    }
+    if (isLetter(lastLetter)) {
+      let coloredWithDefaultColor = safeGetLetterElement(lastLetter);
+      coloredWithDefaultColor.childNodes[0].style.backgroundColor = 'blue';
+    }
   }
 
   function isFreeTextElement(tag) {
