@@ -28,7 +28,7 @@ export class OpenMatrixService {
       ['M', 'N', 'O', 'P'],
       ['Q', 'R', 'S', 'T'],
       ['U', 'V', 'W', 'X'],
-      ['Y', 'Z', ACTION.URL]];
+      ['Y', 'Z', ACTION.URL, ACTION.NO_ACTION]];
 
   private dataReceivedThreshold = 8;
   private app;
