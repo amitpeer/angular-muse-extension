@@ -15,7 +15,7 @@ import {Subject} from "rxjs/Subject";
 import {OpenMatrixService} from "./services/open-matrix-service";
 import {CloseMatrixService} from "./services/close-matrix-service";
 import {GenericKeyboardService} from "./services/generic-keyboard-service";
-import {STATE} from "../api/states";
+import {STATE} from "../api/States";
 
 declare var backgroundScript:any;
 export enum KEY_CODE {

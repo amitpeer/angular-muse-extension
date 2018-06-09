@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import "assets/background.js";
-import {STATE} from "../../api/states";
+import {STATE} from "../../api/States";
 import {Service} from "../../api/Service";
 
 export enum ACTION {
