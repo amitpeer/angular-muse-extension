@@ -107,8 +107,8 @@
 
   function jumpUp() {
     if (getCurrentRow() === 0) {
-      // first row - go to ESC
-      keyboardIndex = specialKeys['ESC'];
+      // first row - do nothing
+      return;
 
     } else if (getCurrentRow() === 1 || getCurrentRow() === 2) {
       // second or third row
