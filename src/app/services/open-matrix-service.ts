@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import "assets/background.js";
 import {STATE} from "../states";
+import {Service} from "../../api/Service";
 
 export enum ACTION {
   CLOSE_MATRIX,
@@ -14,10 +15,10 @@ export enum ACTION {
   URL
 }
 
-declare var backgroundScript:any;
+declare var backgroundScript: any;
 
 @Injectable()
-export class OpenMatrixService {
+export class OpenMatrixService implements Service {
   private selectorIndex = {row: 0, col: 0};
   private letters =
     [[ACTION.NO_ACTION, ACTION.BACK, ACTION.FORWARD, ACTION.CLOSE_MATRIX],
@@ -31,7 +32,6 @@ export class OpenMatrixService {
       ['Y', 'Z', ACTION.URL, ACTION.NO_ACTION]];
 
   private dataReceivedThreshold = 8;
-  private app;
 
   constructor() {
   }
@@ -77,14 +77,6 @@ export class OpenMatrixService {
     return this.letters;
   }
 
-  public backgroundColorChange(exitLetterIndex) {
-    const exitLetter = this.letters[exitLetterIndex.row][exitLetterIndex.col];
-    const enterLetter = this.letters[this.selectorIndex.row][this.selectorIndex.col];
-    if (this.isLetter(enterLetter) || this.isLetter(exitLetter)) {
-      backgroundScript.matrixLetterChange(exitLetter, enterLetter);
-    }
-  }
-
   public headDown() {
     if (this.selectorIndex.row < this.letters.length - 1) {
       const exitLetterIndexes = Object.assign({}, this.selectorIndex);
@@ -122,10 +114,6 @@ export class OpenMatrixService {
     return this.dataReceivedThreshold;
   }
 
-  public isLetter(str) {
-    return str.length === 1 && str.match(/[a-z]/i);
-  }
-
   public getImgSrc(str) {
     var src = "";
 
@@ -150,5 +138,17 @@ export class OpenMatrixService {
     }
 
     return src;
+  }
+
+  private isLetter(str) {
+    return str.length === 1 && str.match(/[a-z]/i);
+  }
+
+  private backgroundColorChange(exitLetterIndex) {
+    const exitLetter = this.letters[exitLetterIndex.row][exitLetterIndex.col];
+    const enterLetter = this.letters[this.selectorIndex.row][this.selectorIndex.col];
+    if (this.isLetter(enterLetter) || this.isLetter(exitLetter)) {
+      backgroundScript.matrixLetterChange(exitLetter, enterLetter);
+    }
   }
 }

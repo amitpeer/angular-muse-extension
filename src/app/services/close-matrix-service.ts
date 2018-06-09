@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import 'assets/background.js';
+import {Service} from "../../api/Service";
 
 declare var backgroundScript: any;
 
 @Injectable()
-export class CloseMatrixService {
+export class CloseMatrixService implements Service {
 
   private dataReceivedThreshold = 1;
 

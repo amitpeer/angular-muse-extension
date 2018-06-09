@@ -1,11 +1,12 @@
 import {Injectable} from "@angular/core";
 import "assets/background.js";
 import {STATE} from "../states";
+import {Service} from "../../api/Service";
 
-declare var backgroundScript:any;
+declare var backgroundScript: any;
 
 @Injectable()
-export class GenericKeyboardService {
+export class GenericKeyboardService implements Service {
 
   public getState() {
     return STATE.GENERIC_KEYBOARD;
@@ -40,5 +41,8 @@ export class GenericKeyboardService {
   }
 
   public shouldHighlight(row, col) {
+  }
+
+  getDataReceivedThreshold() {
   }
 }
