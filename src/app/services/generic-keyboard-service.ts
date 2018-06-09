@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import "assets/background.js";
-import {STATE} from "../states";
+import {STATE} from "../../api/states";
 import {Service} from "../../api/Service";
 
 declare var backgroundScript: any;
