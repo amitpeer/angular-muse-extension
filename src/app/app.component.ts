@@ -131,17 +131,6 @@ export class AppComponent {
     });
   }
 
-  private click() {
-    if (!this.isMovingHead()) {
-      const response = this.matrixState.click();
-      if (response === STATE.GENERIC_KEYBOARD) {
-        this.stateChanged(STATE.GENERIC_KEYBOARD)
-      } else if (response !== 'none') {
-        this.stateChanged();
-      }
-    }
-  }
-
   private stateChanged(changeTo?) {
     const currentState = this.matrixState.getState();
 
@@ -156,6 +145,17 @@ export class AppComponent {
     } else if (changeTo === STATE.OPEN || currentState === STATE.CLOSE || currentState === STATE.GENERIC_KEYBOARD) {
       this.matrixState = this.openMatrixService;
       backgroundScript.maximize();
+    }
+  }
+
+  private click() {
+    if (!this.isMovingHead()) {
+      const response = this.matrixState.click();
+      if (response === STATE.GENERIC_KEYBOARD) {
+        this.stateChanged(STATE.GENERIC_KEYBOARD)
+      } else if (response !== 'none') {
+        this.stateChanged();
+      }
     }
   }
 
