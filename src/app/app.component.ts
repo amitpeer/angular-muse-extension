@@ -165,7 +165,7 @@ export class AppComponent {
 
   private adjustAccelerometerValue() {
     this.XYZ_accelerometer.x = this.accelerometerAdjustedValueX;
-    this.XYZ_accelerometer.y = this.accelerometerAdjustedValueY + 0.25;
+    this.XYZ_accelerometer.y = this.accelerometerAdjustedValueY + 0.20;
     this.XYZ_accelerometer.z = this.accelerometerAdjustedValueZ;
   }
 

@@ -34,7 +34,7 @@ export class GenericKeyboardService implements Service {
   }
 
   public getHeadSensibility() {
-    return 600;
+    return 500;
   }
 
   public getLetter() {
