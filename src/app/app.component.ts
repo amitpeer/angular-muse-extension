@@ -16,16 +16,7 @@ import {OpenMatrixService} from "./services/open-matrix-service";
 import {CloseMatrixService} from "./services/close-matrix-service";
 import {GenericKeyboardService} from "./services/generic-keyboard-service";
 import {STATE} from "../api/States";
-
-declare var backgroundScript: any;
-
-export enum KEY_CODE {
-  RIGHT_ARROW = 39,
-  LEFT_ARROW = 37,
-  UP_ARROW = 38,
-  DOWN_ARROW = 40,
-  ENTER = 13
-}
+import {KEY_CODE} from "../api/Keys";
 
 declare var backgroundScript: any;
 
@@ -42,16 +33,16 @@ export class AppComponent {
   private rightBlinks: Observable<number>;
   private accelerometer: Observable<XYZ>;
   private destroy = new Subject<void>();
-  private acceloAdjustedValueX = 0;
-  private acceloAdjustedValueY = 0.25;
-  private acceloAdjustedValueZ = 1;
+  private accelerometerAdjustedValueX = 0;
+  private accelerometerAdjustedValueY = 0.25;
+  private accelerometerAdjustedValueZ = 1;
   private isInCentralizeMode = false;
   private matrixState;
-  private START_DELAY = 2 * 1000;
-  private XYZ_accelometer = {
-    x: this.acceloAdjustedValueX,
-    y: this.acceloAdjustedValueY,
-    z: this.acceloAdjustedValueZ
+  private START_DELAY = 1000;
+  private XYZ_accelerometer = {
+    x: this.accelerometerAdjustedValueX,
+    y: this.accelerometerAdjustedValueY,
+    z: this.accelerometerAdjustedValueZ
   };
 
   constructor(private openMatrixService: OpenMatrixService, private closeMatrixService: CloseMatrixService,
@@ -63,36 +54,33 @@ export class AppComponent {
     window['angularComponentRef'] = {component: this, zone: zone};
   }
 
-  lettersMatrix() {
+  public lettersMatrix() {
     return this.matrixState.getLetter();
   }
 
-  delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  isLetter(str) {
+  public isLetter(str) {
     return this.matrixState.isLetter(str);
   }
 
-  getImgSrc(str) {
+  public getImgSrc(str) {
     return this.matrixState.getImgSrc(str);
   }
 
-  shouldHighlight(row, col) {
+  public shouldHighlight(row, col) {
     return this.matrixState.shouldHighlight(row, col);
   }
 
-  async onConnectButtonClick() {
+  public async onConnectButtonClick() {
     await this.muse.connect();
     this.muse.start();
     await this.delay(this.START_DELAY);
-    const leftEyeChannel = channelNames.indexOf('AF7');
     const rightEyeChannel = channelNames.indexOf('AF8');
+
+    // use these to take data from different sensors
+    const leftEyeChannel = channelNames.indexOf('AF7');
     const leftEarChannel = channelNames.indexOf('TP9');
     const rightEarChannel = channelNames.indexOf('TP10');
 
-    // noinspection TypeScriptValidateTypes
     this.rightBlinks = this.muse.eegReadings
       .filter(r => r.electrode === rightEyeChannel)
       .map(r => Math.max(...r.samples.map(n => Math.abs(n))))
@@ -119,26 +107,112 @@ export class AppComponent {
     this.startAccelerometer();
   }
 
-  disconnect() {
+  public disconnect() {
     this.muse.disconnect();
   }
 
-  centralize() {
+  public centralize() {
     this.isInCentralizeMode = true;
     this.accelerometer.subscribe(value => {
-      this.acceloAdjustedValueX = value.x;
-      this.acceloAdjustedValueY = value.y;
-      this.acceloAdjustedValueZ = value.z;
+      this.accelerometerAdjustedValueX = value.x;
+      this.accelerometerAdjustedValueY = value.y;
+      this.accelerometerAdjustedValueZ = value.z;
     });
   }
 
-  stopCentralize() {
+  public stopCentralize() {
     this.adjustAccelerometerValue();
     this.isInCentralizeMode = false;
   }
 
+  public changeStateFromOutside(changeTo?) {
+    this.zone.run(() => {
+      this.stateChanged(changeTo);
+    });
+  }
+
+  private click() {
+    if (!this.isMovingHead()) {
+      const response = this.matrixState.click();
+      if (response === STATE.GENERIC_KEYBOARD) {
+        this.stateChanged(STATE.GENERIC_KEYBOARD)
+      } else if (response !== 'none') {
+        this.stateChanged();
+      }
+    }
+  }
+
+  private stateChanged(changeTo?) {
+    const currentState = this.matrixState.getState();
+
+    if (changeTo === STATE.GENERIC_KEYBOARD) {
+      this.matrixState = this.genericKeyboardService;
+      backgroundScript.minimize();
+
+    } else if (changeTo === STATE.CLOSE || currentState === STATE.OPEN) {
+      this.matrixState = this.closeMatrixService;
+      backgroundScript.minimize();
+
+    } else if (changeTo === STATE.OPEN || currentState === STATE.CLOSE || currentState === STATE.GENERIC_KEYBOARD) {
+      this.matrixState = this.openMatrixService;
+      backgroundScript.maximize();
+    }
+  }
+
+  private isMovingHead() {
+    return Date.now() - this.headMoveTimer < this.matrixState.getHeadSensibility();
+  }
+
+  private adjustAccelerometerValue() {
+    this.XYZ_accelerometer.x = this.accelerometerAdjustedValueX;
+    this.XYZ_accelerometer.y = this.accelerometerAdjustedValueY + 0.25;
+    this.XYZ_accelerometer.z = this.accelerometerAdjustedValueZ;
+  }
+
+  private startAccelerometer() {
+    this.accelerometer.subscribe(value => {
+      const msSinceHeadMove = Date.now() - this.headMoveTimer;
+
+      if (msSinceHeadMove > this.matrixState.getHeadSensibility()) {
+
+        // the following line used to be outside, but now it's inside every if
+        // we're not sure what's better yet
+        // but it's good for freezing click while moving
+        // this.headMoveTimer = Date.now();
+
+        if (value.y < (this.XYZ_accelerometer.y * (-1) + 0.20)) {
+          console.log('Accelerometer Data (Left): ', value);
+          this.headMoveTimer = Date.now();
+          this.matrixState.headLeft();
+        }
+
+        else if (value.y > this.XYZ_accelerometer.y) {
+          console.log('Accelerometer Data (Right): ', value);
+          this.headMoveTimer = Date.now();
+          this.matrixState.headRight();
+        }
+
+        else if (value.x > this.XYZ_accelerometer.x + 0.15) {
+          console.log('Accelerometer Data (Down): ', value);
+          this.headMoveTimer = Date.now();
+          this.matrixState.headDown();
+        }
+
+        else if (value.x < this.XYZ_accelerometer.x - 0.15) {
+          console.log('Accelerometer Data (Up): ', value);
+          this.headMoveTimer = Date.now();
+          this.matrixState.headUp();
+        }
+      }
+    });
+  }
+
+  private delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   @HostListener('window:keyup', ['$event'])
-  keyEvent(event: KeyboardEvent) {
+  private keyEvent(event: KeyboardEvent) {
     console.log(event);
 
     if (event.keyCode === KEY_CODE.RIGHT_ARROW) {
@@ -162,77 +236,4 @@ export class AppComponent {
     }
   }
 
-  private click() {
-    if (!this.isMovingHead()) {
-      const response = this.matrixState.click();
-      if (response === STATE.GENERIC_KEYBOARD) {
-        this.stateChanged(STATE.GENERIC_KEYBOARD)
-      } else if (response !== 'none') {
-        this.stateChanged();
-      }
-    }
-  }
-
-  private stateChanged(changeTo?) {
-    var currentState = this.matrixState.getState();
-
-    if (changeTo === STATE.GENERIC_KEYBOARD) {
-      this.matrixState = this.genericKeyboardService;
-      backgroundScript.minimize();
-
-    } else if (changeTo === STATE.CLOSE || currentState === STATE.OPEN) {
-      this.matrixState = this.closeMatrixService;
-      backgroundScript.minimize();
-
-    } else if (changeTo === STATE.OPEN || currentState === STATE.CLOSE || currentState === STATE.GENERIC_KEYBOARD) {
-      this.matrixState = this.openMatrixService;
-      backgroundScript.maximize();
-    }
-  }
-
-  changeStateFromOutside(changeTo?) {
-    this.zone.run(() => {
-      this.stateChanged(changeTo);
-    });
-  }
-
-  private isMovingHead() {
-    return Date.now() - this.headMoveTimer < 1000;
-  }
-
-  private adjustAccelerometerValue() {
-    this.XYZ_accelometer.x = this.acceloAdjustedValueX;
-    this.XYZ_accelometer.y = this.acceloAdjustedValueY + 0.25;
-    this.XYZ_accelometer.z = this.acceloAdjustedValueZ;
-  }
-
-  private startAccelerometer() {
-    this.accelerometer.subscribe(value => {
-      const msSinceHeadMove = Date.now() - this.headMoveTimer;
-
-      if (msSinceHeadMove > this.matrixState.getHeadSensibility()) {
-        // the following line used to be outside, but now it's inside every if
-        // we're not sure what's better yet
-        // but it's good for freezing click while moving
-        // this.headMoveTimer = Date.now();
-        if (value.y < (this.XYZ_accelometer.y * (-1) + 0.20)) {
-          console.log('Accelerometer Data (Left): ', value);
-          this.headMoveTimer = Date.now();
-          this.matrixState.headLeft();
-        } else if (value.y > this.XYZ_accelometer.y) {
-          console.log('Accelerometer Data (Right): ', value);
-          this.headMoveTimer = Date.now();
-          this.matrixState.headRight();
-        } else if (value.x > this.XYZ_accelometer.x + 0.15) {
-          console.log('Accelerometer Data (Down): ', value);
-          this.headMoveTimer = Date.now();
-          this.matrixState.headDown();
-        } else if (value.x < this.XYZ_accelometer.x - 0.15) {
-          console.log('Accelerometer Data (Up): ', value);
-          this.headMoveTimer = Date.now();
-          this.matrixState.headUp();
-        }
-      }
-    });
-  }
 }
