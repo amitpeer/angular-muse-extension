@@ -44,8 +44,4 @@ export class CloseMatrixService implements Service {
 
   public headLeft() {
   }
-
-  public getDataReceivedThreshold() {
-    return this.dataReceivedThreshold;
-  }
 }

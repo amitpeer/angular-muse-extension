@@ -16,6 +16,4 @@ export interface Service {
   headRight();
 
   headLeft();
-
-  getDataReceivedThreshold();
 }

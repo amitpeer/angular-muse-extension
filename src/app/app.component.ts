@@ -41,8 +41,6 @@ export class AppComponent {
   rightBlinks:Observable<number>;
   accelerometer:Observable<XYZ>;
   destroy = new Subject<void>();
-  dataReceivedCount = 0;
-  dataReceivedThreshHold = 7;
 
   acceloAdjustedValueX = 0;
   acceloAdjustedValueY = 0.25;
@@ -83,10 +81,6 @@ export class AppComponent {
 
   shouldHighlight(row, col) {
     return this.matrixState.shouldHighlight(row, col);
-  }
-
-  public dataReceivedThreshHoldChange(threshHold) {
-    this.dataReceivedThreshHold = threshHold;
   }
 
   async onConnectButtonClick() {
@@ -136,10 +130,6 @@ export class AppComponent {
       this.acceloAdjustedValueY = value.y;
       this.acceloAdjustedValueZ = value.z;
     });
-  }
-
-  private isReceivedPastThreshold() {
-    return (this.dataReceivedCount > this.matrixState.getDataReceivedThreshold());
   }
 
   stopCentralize() {

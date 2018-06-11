@@ -109,11 +109,6 @@ export class OpenMatrixService implements Service {
     }
   }
 
-
-  public getDataReceivedThreshold() {
-    return this.dataReceivedThreshold;
-  }
-
   public getImgSrc(str) {
     var src = "";
 

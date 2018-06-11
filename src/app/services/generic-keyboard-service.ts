@@ -42,7 +42,4 @@ export class GenericKeyboardService implements Service {
 
   public shouldHighlight(row, col) {
   }
-
-  getDataReceivedThreshold() {
-  }
 }
