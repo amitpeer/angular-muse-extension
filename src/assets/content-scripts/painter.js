@@ -132,8 +132,7 @@
   }
 
   function safeGetConcreteElement(letter) {
-    return isFatherComponent(components[letter]) ? components[letter].childNodes[1]
-      : components[letter];
+    return isFatherComponent(components[letter]) ? components[letter].childNodes[1] : components[letter];
   }
 
   function safeRemove(spanToRemove, letter) {
@@ -173,11 +172,17 @@
 
   }
 
+  function notANavigatedClick(element) {
+    return element.getAttribute("role") === "button";
+  }
+
   function click(letter) {
     // window.location.href = componentLinks[letter];
     safeGetConcreteElement(letter).click();
-    clearLastClickableElements();
-    retrieveClickableElements();
+    if (notANavigatedClick(safeGetConcreteElement(letter))) {
+      clearLastClickableElements();
+      retrieveClickableElements();
+    }
 
   }
 
