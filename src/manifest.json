@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Extension",
+  "name": "Blink",
   "description": "Angular CLI Chrome app. ",
   "minimum_chrome_version": "56",
   "version": "1.0",
