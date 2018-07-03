@@ -19,8 +19,8 @@ In order to use "Blink ;)" you will need:
 1. Follow the insturctions [here](https://github.com/urish/web-bluetooth-polyfill/) to enable Web Bluetooth in Chrome on Windows 10.
 2. Clone this repo (angluar-muse-extension)
 3. Run `ng build` to build the project, the build artifacts will be stored in the `dist/` directory
-4. Add the extension: open chrome and navigate to chrome://extensions/, press on "Load Unpakced" and navigate to the dist folder in the project. Then copy the extension ID of Blink 1.0
-5. Edit C:\Program Files (x86)\Web Bluetooth Polyfill\manifest.json and change the extension id in the allowed_origins section to match the extension ID you found in step 5
+4. Add the extension: open chrome and navigate to `chrome://extensions/`, press on "Load Unpakced" and navigate to the dist folder in the project. Then copy the extension ID of Blink 1.0
+5. Edit C:\Program Files (x86)\Web Bluetooth Polyfill\manifest.json and change the extension id in the allowed_origins section to match the extension ID you found in step 4
 
 
 ## Running
