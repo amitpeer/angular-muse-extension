@@ -2,10 +2,7 @@
 
 "Blink ;)" is a Google Chrome's extension which allows you to surf the interent with head motions and blinks only (hands-free), by using EEG data received from [Muse EEG headband](http://www.choosemuse.com/).
 
-
-## Credit
-
-"Blink ;)" is powered by [muse-lsl](https://github.com/urish/muse-lsl) library & [web-bluetooth-polyfill](https://github.com/urish/web-bluetooth-polyfill/)
+"Blink ;)" is powered by [muse-js](https://github.com/urish/muse-js) library & [web-bluetooth-polyfill](https://github.com/urish/web-bluetooth-polyfill/)
 
 ## Prequests
 
